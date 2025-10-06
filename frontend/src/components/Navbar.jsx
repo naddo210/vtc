@@ -252,13 +252,18 @@ function Navbar() {
       <nav ref={navbarRef} className="fixed top-0 left-0 w-full z-50 transition-all duration-300">
         <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 h-full">
           {/* Animated logo wrapper */}
-          <div ref={logoWrapRef} className="flex-shrink-0">
-            <div ref={logoRef}>
-              <Link to="/" className="text-white font-bold text-lg sm:text-xl md:text-2xl tracking-wide whitespace-nowrap drop-shadow-lg block">
-                VTC SMART CLASSES<sup className="text-xs sm:text-sm">®</sup>
-              </Link>
-            </div>
-          </div>
+       <div ref={logoWrapRef} className="flex-shrink-0">
+  <div ref={logoRef}>
+    <Link
+      to="/"
+      className="text-white font-bold text-lg sm:text-xl md:text-2xl tracking-wide whitespace-nowrap drop-shadow-lg block"
+    >
+      VTC SMART CLASS
+      <sup className="text-[0.5em] align-super relative -left-0.5">®</sup>
+    </Link>
+  </div>
+</div>
+
 
           {/* Nav items */}
           <ul ref={navItemsRef} className="flex space-x-6 text-white font-semibold hidden md:flex">
@@ -324,10 +329,11 @@ function Navbar() {
               </div>
               {showMobileCourses && (
                 <ul className="ml-4 mt-2 space-y-2 animate-fadeIn">
-                  <li><Link to="/courses/foundation-builder" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Foundation Builder</Link></li>
+                 
                   <li><Link to="/courses/neet" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>NEET</Link></li>
                   <li><Link to="/courses/jee" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>JEE</Link></li>
                   <li><Link to="/courses/mht-cet" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>MHT-CET</Link></li>
+                   <li><Link to="/courses/foundation-builder" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Foundation Builder</Link></li>
                   <li><Link to="/courses" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>All Courses</Link></li>
                 </ul>
               )}
@@ -336,7 +342,7 @@ function Navbar() {
             <li><Link to="/gallery" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Gallery</Link></li>
             <li><Link to="/resources" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Resources</Link></li>
             <li><Link to="/student-zone" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Student Zone</Link></li>
-            <li><Link to="/how-to-apply" className="block py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How to Apply</Link></li>
+        
             <li><Link to="/contact" className="flex items-center py-2 px-3 hover:bg-red-800 rounded-lg transition-colors" onClick={() => setIsMobileMenuOpen(false)}><FaPhone className="mr-2" /> Contact Us</Link></li>
           </ul>
         </div>

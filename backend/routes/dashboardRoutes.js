@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
 const Resource = require('../models/Resource');
-const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // Get dashboard metrics
-router.get('/metrics', verifyToken, verifyAdmin, async (req, res) => {
+router.get('/metrics', protect, adminOnly, async (req, res) => {
   try {
     // Get student count
     const studentCount = await Student.countDocuments();

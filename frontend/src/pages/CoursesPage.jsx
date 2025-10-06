@@ -71,38 +71,38 @@ const CoursesPage = () => {
   // Course data
   const courses = [
     {
-      id: "web-development",
-      title: "Web Development",
-      description: "Master modern web development with HTML, CSS, JavaScript, React, Node.js, and more.",
+      id: "NEET",
+      title: "NEET",
+      description: "Master the NEET exam with our comprehensive course covering all topics.",
       image: "https://via.placeholder.com/600x400",
-      features: ["Frontend & Backend Development", "Responsive Design", "API Integration", "Database Management"],
+      features: ["Physics", "Chemistry", "Biology"],
       duration: "6 months",
       level: "Beginner to Advanced"
     },
     {
-      id: "data-science",
-      title: "Data Science",
-      description: "Learn data analysis, visualization, machine learning, and statistical modeling.",
+      id: "JEE",
+      title: "JEE",
+      description: "Master the JEE exam with our comprehensive course covering all topics.",
       image: "https://via.placeholder.com/600x400",
-      features: ["Data Analysis", "Machine Learning", "Statistical Modeling", "Data Visualization"],
+      features: ["Physics", "Chemistry", "Biology"],
       duration: "8 months",
       level: "Intermediate"
     },
     {
-      id: "ai-ml",
-      title: "AI & Machine Learning",
-      description: "Dive deep into artificial intelligence, neural networks, and advanced machine learning algorithms.",
+      id: "MHT-CET",
+      title: "MHT-CET",
+      description: "Master the MH-CET exam with our comprehensive course covering all topics.",
       image: "https://via.placeholder.com/600x400",
-      features: ["Neural Networks", "Deep Learning", "Computer Vision", "Natural Language Processing"],
+      features: ["Physics", "Chemistry", "Biology"],
       duration: "10 months",
       level: "Advanced"
     },
     {
-      id: "bio-vaccine",
-      title: "Bio Vaccine",
-      description: "Explore biotechnology and vaccine development with hands-on laboratory experience.",
+      id: "foundation-builder",
+      title: "School-Section",
+      description: "Master the School-Section exam with our comprehensive course covering all topics.",
       image: "https://via.placeholder.com/600x400",
-      features: ["Molecular Biology", "Immunology", "Vaccine Development", "Clinical Trials"],
+      features: ["Physics", "Chemistry", "Biology"],
       duration: "12 months",
       level: "Advanced"
     }

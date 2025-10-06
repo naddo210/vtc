@@ -565,7 +565,7 @@ const HomePage = () => {
       subtitle: "Mathematics • Science • Logic",
       description: "The First Step Towards Big Dreams. Early preparation for competitive exams while building strong fundamentals.",
       image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      link: "/courses/foundation",
+      link: "/courses/foundation-builder",
       color: "from-amber-500 to-orange-600",
       duration: "1-4 Years",
       level: "Class 7-10",
@@ -678,10 +678,10 @@ const HomePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="about-content order-2 lg:order-1">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-r from-[#cb1517] to-red-600 bg-clip-text text-transparent leading-tight">
-                About VTC Smart Classes
+                About VTC SMART CLASS
               </h2>
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 leading-relaxed">
-                For over a decade, VTC Smart Classes has been at the forefront of educational excellence, 
+                For over a decade, VTC SMART CLASS has been at the forefront of educational excellence, 
                 transforming careers and shaping the future of technology through innovative learning approaches.
               </p>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8">
@@ -725,16 +725,16 @@ const HomePage = () => {
         </div>
         
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="stats-title text-center mb-12 sm:mb-16">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white">
+          <div className="stats-title text-center mb-8 sm:mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-6xl font-black mb-4 sm:mb-6 text-white">
               Our Impact in Numbers
             </h2>
-            <p className="text-xl sm:text-2xl text-purple-200 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-2xl text-purple-200 max-w-3xl mx-auto px-2">
               Join a thriving community of successful learners and industry professionals
             </p>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 text-center px-2 sm:px-4">
             {[
               { icon: FaUsers, number: 10000, suffix: "+", label: "Happy Students", color: "from-cyan-400 to-blue-500" },
               { icon: FaGraduationCap, number: 98, suffix: "%", label: "Success Rate", color: "from-green-400 to-emerald-500" },
@@ -742,13 +742,13 @@ const HomePage = () => {
               { icon: FaRocket, number: 500, suffix: "+", label: "Career Transitions", color: "from-pink-400 to-red-500" }
             ].map((stat, index) => (
               <div key={index} className="stat-card group">
-                <div className="bg-white/10 backdrop-blur-lg p-8 rounded-3xl border border-white/20 transform transition-all duration-500 hover:scale-110 hover:bg-white/20">
-                  <div className={`bg-gradient-to-r ${stat.color} p-6 rounded-2xl inline-flex mb-6 group-hover:scale-110 transition-all duration-300 shadow-2xl`}>
-                    <stat.icon className="text-4xl text-white" />
+                <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 lg:p-8 rounded-3xl border border-white/20 transform transition-all duration-500 hover:scale-105 hover:bg-white/20">
+                  <div className={`bg-gradient-to-r ${stat.color} p-3 sm:p-4 lg:p-6 rounded-2xl inline-flex mb-3 sm:mb-4 lg:mb-6 group-hover:scale-110 transition-all duration-300 shadow-2xl`}>
+                    <stat.icon className="text-2xl sm:text-3xl lg:text-4xl text-white" />
                   </div>
                   
-                  <div className="mb-4">
-                    <div className="text-5xl sm:text-6xl font-black mb-2 text-white">
+                  <div className="mb-3 sm:mb-4">
+                    <div className="text-3xl sm:text-4xl lg:text-6xl font-black mb-1 sm:mb-2 text-white">
                       <span 
                         className="stat-counter" 
                         data-target={stat.number}
@@ -757,10 +757,10 @@ const HomePage = () => {
                         0{stat.suffix}
                       </span>
                     </div>
-                    <p className="text-red-200 font-semibold text-lg">{stat.label}</p>
+                    <p className="text-red-200 font-semibold text-base sm:text-lg">{stat.label}</p>
                   </div>
                   
-                  <div className="w-full bg-white/20 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-white/20 rounded-full h-2 sm:h-3 overflow-hidden">
                     <div 
                       className={`bg-gradient-to-r ${stat.color} h-full rounded-full transform origin-left scale-x-0`}
                       style={{
@@ -1021,7 +1021,7 @@ const HomePage = () => {
         <div className="container mx-auto relative z-10">
           <div className="events-title text-center mb-16">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight">
-              Upcoming Events
+             Glimpse of Our Events
             </h2>
             <p className="text-xl sm:text-2xl text-purple-200 max-w-3xl mx-auto px-4">
               Join our exclusive workshops and networking events
@@ -1031,16 +1031,16 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "AI Revolution Summit 2025",
-                image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                title: "KALSUBAI TREK/CAMP",
+                image: "/kalsubai.jpg"
               },
               {
-                title: "Web Development Bootcamp",
-                image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                title: "NEW YEAR",
+                image: "/New-year-party.jpg"
               },
               {
-                title: "Career Fair 2025",
-                image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+                title: "CHRISTMAS PARTY",
+                image: "/christmas.jpg"
               }
             ].map((event, index) => (
               <div key={index} className="event-card group cursor-pointer">
@@ -1108,7 +1108,7 @@ const HomePage = () => {
               Success Stories
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Hear from our students who transformed their careers with VTC Classes
+              Hear from our students who transformed their careers with VTC CLASS
             </p>
           </div>
           
@@ -1139,7 +1139,7 @@ const HomePage = () => {
                   name: "Rahul Sharma",
                   role: "Full Stack Developer at Google",
                   image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-                  text: "VTC Classes transformed my career completely. The hands-on approach and industry mentorship helped me land my dream job at Google within 6 months!",
+                  text: "VTC CLASS transformed my career completely. The hands-on approach and industry mentorship helped me land my dream job at Google within 6 months!",
                   rating: 5,
                   company: "Google"
                 },
@@ -1222,20 +1222,20 @@ const HomePage = () => {
               {
                 icon: FaPhone,
                 title: "Call Us",
-                info: "+91 98765 43210",
+                info: "+91 7077071737",
                 subInfo: "Mon-Sat 9AM-7PM"
               },
               {
                 icon: FaEnvelope,
                 title: "Email Us",
-                info: "info@vtcclasses.com",
+                info: "vtcsmartclass@gmail.com",
                 subInfo: "We reply within 24 hours"
               },
               {
                 icon: FaMapMarkerAlt,
                 title: "Visit Us",
-                info: "VTC Campus, Tech City",
-                subInfo: "Bangalore, Karnataka"
+                info: "Vile Parle (E), Mumbai - 400 057",
+                subInfo: "Andheri (E), Mumbai"
               }
             ].map((contact, index) => (
               <div key={index} className="contact-card text-center">
