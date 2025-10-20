@@ -9,6 +9,8 @@ const carouselAdRoutes = require('./routes/carouselAdRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 const { protect } = require('./middleware/authMiddleware');
 
 // Load env vars
@@ -18,7 +20,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5001; // Changed from 5000 to 5001 to avoid port conflict
+const PORT =process.env.PORT|| 5000; // Using port 5000 as requested
 
 // Middleware
 app.use(cors());
@@ -31,6 +33,8 @@ app.use('/api/carousel', carouselAdRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/events', eventRoutes);
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

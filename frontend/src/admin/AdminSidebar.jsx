@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaFileAlt, FaGraduationCap, FaImages } from "react-icons/fa";
+import { FaHome, FaFileAlt, FaGraduationCap, FaImages, FaCalendarAlt, FaQuoteRight } from "react-icons/fa";
 
 const AdminSidebar = () => {
   return (
@@ -36,6 +36,26 @@ const AdminSidebar = () => {
             >
               <FaImages className="mr-3 text-white" />
               Carousel Ads
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/admin/events"
+              className="flex items-center p-3 rounded hover:bg-red-700 transition-colors"
+            >
+              <FaCalendarAlt className="mr-3 text-white" />
+              Events
+            </Link>
+          </li>
+
+          <li className="mb-2">
+            <Link
+              to="/admin/testimonials"
+              className="flex items-center p-3 rounded hover:bg-red-700 transition-colors"
+            >
+              <FaQuoteRight className="mr-3 text-white" />
+              Testimonials
             </Link>
           </li>
 

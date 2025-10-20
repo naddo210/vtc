@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
 import axios from "axios";
+import TestimonialSlider from "../components/TestimonialSlider";
 import { 
   FaPhone, 
   FaImages, 
@@ -48,9 +49,33 @@ gsap.registerPlugin(ScrollTrigger);
 const HomePage = () => {
   const sectionRefs = useRef([]);
   const logoRef = useRef(null);
+  const heroRef = useRef(null);
   const heroTextRef = useRef(null);
+  const aboutRef = useRef(null);
+  const servicesRef = useRef(null);
   const statsRef = useRef(null);
+  const coursesRef = useRef(null);
+  const specialProgramsRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const contactRef = useRef(null);
+  const ctaRef = useRef(null);
+  
+  const [testimonials, setTestimonials] = useState([]);
   const [carouselAds, setCarouselAds] = useState([]);
+  
+  // Fetch testimonials from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const testimonialResponse = await axios.get('/api/testimonials');
+        setTestimonials(testimonialResponse.data);
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+    
+    fetchData();
+  }, []);
   
   // Fetch carousel ads from API
   useEffect(() => {
@@ -67,12 +92,6 @@ const HomePage = () => {
     
     fetchCarouselAds();
   }, []);
-  const coursesRef = useRef(null);
-  const specialProgramsRef = useRef(null);
-  const eventsRef = useRef(null);
-  const testimonialsRef = useRef(null);
-  const contactRef = useRef(null);
-  const ctaRef = useRef(null);
   
   const addToRefs = (el) => {
     if (el && !sectionRefs.current.includes(el)) {
@@ -309,77 +328,7 @@ const HomePage = () => {
       });
     }
 
-    // ScrollTrigger for Events Section
-    if (eventsRef.current) {
-      // Events title
-      gsap.fromTo(
-        eventsRef.current.querySelector('.events-title'),
-        { y: -80, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: eventsRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
 
-      // Event cards with different directions
-      const eventCards = eventsRef.current.querySelectorAll('.event-card');
-      eventCards.forEach((card, index) => {
-        let fromX = 0, fromY = 0;
-        
-        if (index === 0) { fromX = -120; } // from left
-        else if (index === 1) { fromY = -120; } // from top
-        else if (index === 2) { fromX = 120; } // from right
-
-        gsap.fromTo(
-          card,
-          { 
-            x: fromX, 
-            y: fromY, 
-            opacity: 0,
-            scale: 0.8,
-            rotation: index * 5
-          },
-          {
-            x: 0,
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotation: 0,
-            duration: 1.2,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              toggleActions: "play none none reverse"
-            }
-          }
-        );
-      });
-
-      // Events CTA button
-      gsap.fromTo(
-        eventsRef.current.querySelector('.events-cta'),
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "bounce.out",
-          scrollTrigger: {
-            trigger: eventsRef.current,
-            start: "top 70%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
 
     // ScrollTrigger for Testimonials
     if (testimonialsRef.current) {
@@ -577,96 +526,105 @@ const HomePage = () => {
   return (
     <div className="overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen overflow-hidden">
-        <Swiper
-          spaceBetween={0}
-          centeredSlides={true}
-          effect="fade"
-          autoplay={{
-            delay: 6000,
-            disableOnInteraction: false,
+     <section className="relative h-screen overflow-hidden">
+  <Swiper
+    spaceBetween={0}
+    centeredSlides={true}
+    effect="fade"
+    loop={true}
+    autoplay={{
+      delay: 6000,
+      disableOnInteraction: false,
+    }}
+    pagination={{
+      clickable: true,
+      bulletActiveClass: 'swiper-pagination-bullet-active bg-white',
+      bulletClass: 'swiper-pagination-bullet bg-white bg-opacity-50'
+    }}
+    navigation={false}
+    modules={[Autoplay, Pagination, Navigation, EffectFade]}
+    className="h-full hero-swiper"
+  >
+    {carouselAds && carouselAds.length > 0 ? (
+      carouselAds.map((ad) => (
+        <SwiperSlide key={ad._id}>
+          <div 
+            className="h-full relative flex items-center justify-center text-white overflow-hidden"
+            style={{
+              backgroundImage: `url("${ad.imageUrl}")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              imageRendering: 'high-quality'
+            }}
+          >
+            {/* ✅ Updated overlay with less color and better visibility */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-[#cb1517]/25 to-red-900/35"></div>
+            
+            <div ref={heroTextRef} className="text-center px-4 sm:px-6 lg:px-10 z-10 max-w-4xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-white via-red-200 to-pink-200 bg-clip-text text-transparent leading-tight">
+                {ad.title}
+              </h1>
+              {ad.description && (
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-red-100 font-light px-2">
+                  {ad.description}
+                </p>
+              )}
+              {ad.link && (
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                  <Link
+                    to={ad.link}
+                    className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl w-full sm:w-auto"
+                  >
+                    <span className="flex items-center justify-center">
+                      <FaRocket className="mr-2" />
+                      Learn More
+                    </span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </SwiperSlide>
+      ))
+    ) : (
+      <SwiperSlide>
+        <div 
+          className="h-full relative flex items-center justify-center text-white overflow-hidden"
+          style={{
+            backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
           }}
-          pagination={{
-            clickable: true,
-            bulletActiveClass: 'swiper-pagination-bullet-active bg-white',
-            bulletClass: 'swiper-pagination-bullet bg-white bg-opacity-50'
-          }}
-          navigation={false}
-          modules={[Autoplay, Pagination, Navigation, EffectFade]}
-          className="h-full hero-swiper"
         >
-          {carouselAds && carouselAds.length > 0 ? (
-            carouselAds.map((ad) => (
-              <SwiperSlide key={ad._id}>
-                <div 
-                  className="h-full relative flex items-center justify-center text-white overflow-hidden"
-                  style={{
-                    backgroundImage: `url("${ad.imageUrl}")`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    imageRendering: 'high-quality'
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-[#cb1517]/60 to-red-900/70"></div>
-                  <div ref={heroTextRef} className="text-center px-4 sm:px-6 lg:px-10 z-10 max-w-4xl">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-white via-red-200 to-pink-200 bg-clip-text text-transparent leading-tight">
-                      {ad.title}
-                    </h1>
-                    {ad.description && (
-                      <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-red-100 font-light px-2">
-                        {ad.description}
-                      </p>
-                    )}
-                    {ad.link && (
-                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                        <Link to={ad.link} className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl w-full sm:w-auto">
-                          <span className="flex items-center justify-center">
-                            <FaRocket className="mr-2" />
-                            Learn More
-                          </span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))
-          ) : (
-            <SwiperSlide>
-              <div 
-                className="h-full relative flex items-center justify-center text-white overflow-hidden"
-                style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80")',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-[#cb1517]/60 to-red-900/70"></div>
-                <div ref={heroTextRef} className="text-center px-4 sm:px-6 lg:px-10 z-10 max-w-4xl">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-white via-red-200 to-pink-200 bg-clip-text text-transparent leading-tight">
-                    Transform Your Future
-                  </h1>
-                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-red-100 font-light px-2">
-                    Join thousands of students who've accelerated their careers with cutting-edge education
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                    <button className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl w-full sm:w-auto">
-                      <span className="flex items-center justify-center">
-                        <FaRocket className="mr-2" />
-                        Start Your Journey
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          )}
-        </Swiper>
-      </section>
+          {/* ✅ Updated overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/50"></div>
 
-      {/* Stats Section */}
+          <div ref={heroTextRef} className="text-center px-4 sm:px-6 lg:px-10 z-10 max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-white via-red-200 to-pink-200 bg-clip-text text-transparent leading-tight">
+              Unlock Your True Potential
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-red-100 font-light px-2">
+              Step into success with VTC SMART CLASS — join thousands who've accelerated their careers.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <button className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl w-full sm:w-auto">
+                <span className="flex items-center justify-center">
+                  <FaRocket className="mr-2" />
+                  Start Your Journey
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </SwiperSlide>
+    )}
+  </Swiper>
+</section>
+
+
+      
   
 
       {/* About Section */}
@@ -681,12 +639,16 @@ const HomePage = () => {
                 About VTC SMART CLASS
               </h2>
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 leading-relaxed">
-                For over a decade, VTC SMART CLASS has been at the forefront of educational excellence, 
-                transforming careers and shaping the future of technology through innovative learning approaches.
+                For over a decade, VTC SMART CLASS has been at the
+forefront of educational excellence, transforming
+careers and shaping the future of technology through
+innovative learning approaches.
               </p>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8">
-                Our mission is to bridge the gap between academic knowledge and industry requirements, 
-                ensuring our students are not just job-ready, but future-ready leaders in their fields.
+                Our mission is to bridge the gap between academic
+knowledge and industry requirements, ensuring our
+students are not just job-ready, but future-ready leaders
+in their fields.
               </p>
               <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div className="about-card text-center p-3 sm:p-4 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
@@ -707,7 +669,7 @@ const HomePage = () => {
             </div>
             <div className="about-image order-1 lg:order-2">
               <img 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                src="/h5.jpg" 
                 alt="Students learning" 
                 className="w-full rounded-2xl sm:rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-500"
               />
@@ -858,10 +820,7 @@ const HomePage = () => {
                         Explore Course
                         <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                       </Link>
-                      <button className="flex-1 border-2 border-gray-300 text-gray-700 hover:border-red-600 hover:text-red-600 font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center">
-                        <FaVideo className="mr-2" />
-                        Preview
-                      </button>
+                     
                     </div>
                   </div>
                 </div>
@@ -1007,197 +966,106 @@ const HomePage = () => {
       </section>
 
       {/* Events Section */}
-      <section 
-        ref={eventsRef}
-        className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-br from-[#663399] to-purple-900 text-white relative overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-            backgroundSize: '30px 30px'
-          }}></div>
-        </div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="events-title text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight">
-             Glimpse of Our Events
-            </h2>
-            <p className="text-xl sm:text-2xl text-purple-200 max-w-3xl mx-auto px-4">
-              Join our exclusive workshops and networking events
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "KALSUBAI TREK/CAMP",
-                image: "/kalsubai.jpg"
-              },
-              {
-                title: "NEW YEAR",
-                image: "/New-year-party.jpg"
-              },
-              {
-                title: "CHRISTMAS PARTY",
-                image: "/christmas.jpg"
-              }
-            ].map((event, index) => (
-              <div key={index} className="event-card group cursor-pointer">
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/20 transform transition-all duration-700 hover:scale-110 hover:bg-white/20">
-                  <div className="relative h-64 overflow-hidden">
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center transform group-hover:scale-125 transition-transform duration-1000"
-                      style={{ backgroundImage: `url(${event.image})` }}
-                    ></div>
-                    
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
-                    
-                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                      <div className="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <div className="bg-white/20 backdrop-blur-lg rounded-full p-4 mb-4 border border-white/30">
-                          <FaCalendarAlt className="text-3xl text-white" />
-                        </div>
-                        <p className="text-white font-semibold">Learn More</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 text-center">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-purple-200 transition-all duration-300 mb-4">
-                      {event.title}
-                    </h3>
-                    
-                    <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-white rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"
-                      ></div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <div className="bg-white/20 backdrop-blur-lg rounded-full p-2 border border-white/30">
-                      <FaArrowRight className="text-white text-sm" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="events-cta text-center mt-12">
-            <Link 
-              to="/events" 
-              className="inline-flex items-center bg-white text-[#663399] font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105 group hover:shadow-2xl"
-            >
-              View All Events 
-              <FaChevronRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </div>
-      </section>
+
 
       {/* Testimonials */}
       <section 
         ref={testimonialsRef}
         className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-b from-white to-gray-50"
       >
-        <div className="container mx-auto relative z-10">
+        <div className="container mx-auto">
           <div className="testimonials-title text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-[#663399] to-red-600 bg-clip-text text-transparent leading-tight">
-              Success Stories
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent leading-tight">
+              What Our Students Say
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Hear from our students who transformed their careers with VTC CLASS
+              Hear from our students about their transformative learning experiences
             </p>
           </div>
           
+          {/* Image Testimonial Slider */}
+          <div className="mb-12">
+            <TestimonialSlider />
+          </div>
+          
           <div className="testimonials-container">
-            <Swiper
-              spaceBetween={20}
-              centeredSlides={false}
-              autoplay={{
-                delay: 4000,
-                disableOnInteraction: false,
-              }}
-              pagination={{
-                clickable: true,
-                bulletActiveClass: 'swiper-pagination-bullet-active bg-purple-600',
-                bulletClass: 'swiper-pagination-bullet bg-gray-300'
-              }}
-              modules={[Autoplay, Pagination]}
-              className="testimonial-swiper pb-12"
-              breakpoints={{
-                320: { slidesPerView: 1, spaceBetween: 20 },
-                640: { slidesPerView: 1, spaceBetween: 20 },
-                768: { slidesPerView: 2, spaceBetween: 30 },
-                1024: { slidesPerView: 3, spaceBetween: 30 },
-              }}
-            >
-              {[
-                {
-                  name: "Rahul Sharma",
-                  role: "Full Stack Developer at Google",
-                  image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-                  text: "VTC CLASS transformed my career completely. The hands-on approach and industry mentorship helped me land my dream job at Google within 6 months!",
-                  rating: 5,
-                  company: "Google"
-                },
-                {
-                  name: "Priya Patel",
-                  role: "Data Scientist at Microsoft",
-                  image: "https://images.unsplash.com/photo-1494790108755-2616b612b77c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-                  text: "The AI & ML program exceeded my expectations. The practical projects and real-world datasets prepared me for the industry challenges perfectly.",
-                  rating: 5,
-                  company: "Microsoft"
-                },
-                {
-                  name: "Amit Kumar",
-                  role: "Senior Developer at Amazon",
-                  image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-                  text: "Super 7 Batch was intense but incredibly rewarding. The accelerated learning format and personalized attention helped me advance quickly.",
-                  rating: 5,
-                  company: "Amazon"
-                },
-                {
-                  name: "Neha Gupta",
-                  role: "Biotech Researcher",
-                  image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-                  text: "The Bio Vaccine program opened doors I never imagined. The faculty's industry connections led to amazing research opportunities.",
-                  rating: 5,
-                  company: "Bio Research Lab"
-                }
-              ].map((testimonial, index) => (
-                <SwiperSlide key={index}>
-                  <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-lg hover:shadow-2xl border border-gray-100 h-full transform transition-all duration-300 hover:scale-105">
-                    <FaQuoteLeft className="text-2xl sm:text-3xl text-[#663399] mb-4" />
-                    <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-6 italic">
-                      "{testimonial.text}"
-                    </p>
-                    
-                    <div className="flex items-center">
-                      <img 
-                        src={testimonial.image} 
-                        alt={testimonial.name}
-                        className="w-12 sm:w-14 lg:w-16 h-12 sm:h-14 lg:h-16 rounded-full shadow-lg mr-3 sm:mr-4 object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-800 text-sm sm:text-base lg:text-lg">{testimonial.name}</h4>
-                        <p className="text-gray-600 text-xs sm:text-sm">{testimonial.role}</p>
-                        <div className="flex items-center mt-1 sm:mt-2">
-                          <div className="flex">
+            {testimonials.length === 0 ? (
+              <div className="text-center py-10">
+                <div className="animate-pulse flex flex-col items-center">
+                  <div className="rounded-full bg-slate-200 h-16 w-16 mb-4"></div>
+                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            ) : (
+              <Swiper
+                spaceBetween={30}
+                centeredSlides={true}
+                loop={true}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                  bulletActiveClass: 'swiper-pagination-bullet-active-purple',
+                  bulletClass: 'swiper-pagination-bullet-gray'
+                }}
+                navigation={true}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="testimonial-swiper pb-16"
+                effect="coverflow"
+                coverflowEffect={{
+                  rotate: 50,
+                  stretch: 0,
+                  depth: 100,
+                  modifier: 1,
+                  slideShadows: true,
+                }}
+                breakpoints={{
+                  320: { slidesPerView: 1, spaceBetween: 20 },
+                  640: { slidesPerView: 1, spaceBetween: 20 },
+                  768: { slidesPerView: 2, spaceBetween: 30 },
+                  1024: { slidesPerView: 3, spaceBetween: 40 },
+                }}
+              >
+                {testimonials.map((testimonial) => (
+                  !testimonial.isImageOnly && (
+                    <SwiperSlide key={testimonial._id}>
+                      <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-gray-100 h-full transform transition-all duration-500 hover:scale-105 hover:border-purple-200">
+                        <div className="flex justify-center mb-6">
+                          <div className="relative">
+                            <img 
+                              src={testimonial.image.startsWith('/uploads/') ? `/api${testimonial.image}` : testimonial.image} 
+                              alt={testimonial.name}
+                              className="w-20 h-20 rounded-full shadow-lg object-cover border-4 border-purple-100"
+                            />
+                            <div className="absolute -bottom-2 -right-2 bg-purple-600 rounded-full p-1">
+                              <FaQuoteLeft className="text-white text-sm" />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-center mb-4">
+                          <h4 className="font-bold text-gray-800 text-lg">{testimonial.name}</h4>
+                          <p className="text-gray-600 text-sm">{testimonial.role} at {testimonial.company}</p>
+                          <div className="flex items-center justify-center mt-2">
                             {[...Array(testimonial.rating)].map((_, i) => (
-                              <FaStar key={i} className="text-yellow-400 w-3 sm:w-4 h-3 sm:h-4 mr-1" />
+                              <FaStar key={i} className="text-yellow-400 w-4 h-4 mx-0.5" />
                             ))}
                           </div>
-                          <span className="ml-2 text-[#663399] text-xs font-semibold">{testimonial.company}</span>
                         </div>
+                        
+                        <p className="text-gray-700 text-center leading-relaxed italic bg-purple-50 p-4 rounded-xl">
+                          "{testimonial.text}"
+                        </p>
                       </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                    </SwiperSlide>
+                  )
+                ))}
+              </Swiper>
+            )}
           </div>
         </div>
       </section>
@@ -1242,7 +1110,7 @@ const HomePage = () => {
                 <div className="bg-gradient-to-br from-[#663399] to-purple-800 p-6 sm:p-8 rounded-2xl sm:rounded-3xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                   <contact.icon className="text-3xl sm:text-4xl text-purple-200 mx-auto mb-3 sm:mb-4" />
                   <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{contact.title}</h3>
-                  <p className="text-purple-100 text-base sm:text-lg mb-1">{contact.info}</p>
+                  <p className="text-purple-100 text-base sm:text-lg">{contact.info}</p>
                   <p className="text-purple-300 text-sm">{contact.subInfo}</p>
                 </div>
               </div>
@@ -1260,7 +1128,7 @@ const HomePage = () => {
                 <FaChevronRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <a 
-                href="tel:+919876543210" 
+                href="tel:+917077071737" 
                 className="inline-flex items-center border-2 border-white text-white hover:bg-white hover:text-black font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 w-full sm:w-auto justify-center"
               >
                 <FaPhone className="mr-2" />
@@ -1318,7 +1186,7 @@ const HomePage = () => {
       {/* Floating Action Buttons */}
       <div className="fixed bottom-4 sm:bottom-6 lg:bottom-8 right-4 sm:right-6 lg:right-8 flex flex-col space-y-3 sm:space-y-4 z-40">
         <a 
-          href="tel:+919876543210" 
+          href="tel:+917710048831" 
           className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white p-3 sm:p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110"
         >
           <FaPhone size={20} className="sm:w-6 sm:h-6" />
@@ -1371,14 +1239,19 @@ const HomePage = () => {
           }
         }
         
-        .testimonial-swiper .swiper-pagination-bullet {
+        .testimonial-swiper .swiper-pagination-bullet-gray {
           width: 8px;
           height: 8px;
           margin: 0 3px;
+          background-color: #d1d5db;
+        }
+        
+        .testimonial-swiper .swiper-pagination-bullet-active-purple {
+          background-color: #9333ea;
         }
 
         @media (min-width: 640px) {
-          .testimonial-swiper .swiper-pagination-bullet {
+          .testimonial-swiper .swiper-pagination-bullet-gray {
             width: 10px;
             height: 10px;
             margin: 0 4px;

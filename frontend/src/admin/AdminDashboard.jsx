@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { FaUsers, FaFileAlt, FaGraduationCap, FaSpinner } from "react-icons/fa";
-import axios from "axios";
+import api, { endpoints } from '../api';
 
 const AdminDashboard = () => {
   const [metrics, setMetrics] = useState({
     studentCount: 0,
     resourceCount: 0,
+    eventCount: 0,
+    testimonialCount: 0,
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
@@ -23,11 +25,7 @@ const AdminDashboard = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5000/api/dashboard/metrics", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await api.get(endpoints.dashboardMetrics);
 
         setMetrics(response.data);
         setLoading(false);
@@ -71,7 +69,7 @@ const AdminDashboard = () => {
     <div>
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-600">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-red-100 text-red-600 mr-4">
@@ -92,6 +90,30 @@ const AdminDashboard = () => {
             <div>
               <p className="text-sm text-gray-500 uppercase">Resources Uploaded</p>
               <p className="text-2xl font-bold">{metrics.resourceCount}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+              <FaFileAlt size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Total Events</p>
+              <p className="text-2xl font-bold">{metrics.eventCount}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-600">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+              <FaUsers size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Total Testimonials</p>
+              <p className="text-2xl font-bold">{metrics.testimonialCount}</p>
             </div>
           </div>
         </div>

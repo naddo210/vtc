@@ -33,11 +33,11 @@ function App() {
   }, [location]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full">
       <Navbar />
-     <main ref={mainRef} className="flex-grow pt-9 transition-all duration-500 ease-in-out">
+     <main ref={mainRef} className="flex-grow pt-9 transition-all duration-500 ease-in-out w-full">
 
-        <div className="container mx-auto px-4">
+        <div className="w-full px-4">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -63,6 +63,6 @@ function App() {
       <Footer />
     </div>
   );
-};
+}
 
 export default App;

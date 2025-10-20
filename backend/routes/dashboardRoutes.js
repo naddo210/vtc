@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
 const Resource = require('../models/Resource');
+const Event = require('../models/Event');
+const Testimonial = require('../models/Testimonial');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // Get dashboard metrics
@@ -12,6 +14,12 @@ router.get('/metrics', protect, adminOnly, async (req, res) => {
     
     // Get resources count
     const resourceCount = await Resource.countDocuments();
+    
+    // Get event count
+    const eventCount = await Event.countDocuments();
+    
+    // Get testimonial count
+    const testimonialCount = await Testimonial.countDocuments();
     
     // Get recent activity (last 5 students and resources)
     const recentStudents = await Student.find()
@@ -43,6 +51,8 @@ router.get('/metrics', protect, adminOnly, async (req, res) => {
     res.json({
       studentCount,
       resourceCount,
+      eventCount,
+      testimonialCount,
       recentActivity
     });
   } catch (err) {

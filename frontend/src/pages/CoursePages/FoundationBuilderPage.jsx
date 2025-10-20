@@ -43,7 +43,7 @@ const FoundationBuilderPage = () => {
   return (
     <div className="pt-16 bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-black to-green-700 text-white py-20">
+      <section className="bg-gradient-to-r from-black to-gray-700 text-white py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Foundation Builder & Pre-Nurture – The First Step Towards Big Dreams</h1>
           <p className="text-xl max-w-3xl">
@@ -57,13 +57,13 @@ const FoundationBuilderPage = () => {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row gap-12">
             <div className="md:w-2/3">
-              <h2 className="text-3xl font-bold mb-6 text-green-700">Course Overview</h2>
+              <h2 className="text-3xl font-bold mb-6 text-black-700">Course Overview</h2>
               <p className="text-gray-700 mb-6">
                 These programs are not just about school exams – they are about preparing students early for competitive exams like NEET, JEE, MHT-CET, Olympiads, and NTSE, while also building confidence in every subject.
               </p>
               
               <div className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-green-700">Why Foundation & Pre-Nurture?</h3>
+                <h3 className="text-xl font-bold mb-4 text-black-700">Why Foundation & Pre-Nurture?</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <FaCheckCircle className="text-green-500 mt-1 mr-2" />
@@ -91,7 +91,7 @@ const FoundationBuilderPage = () => {
             
             <div className="md:w-1/3">
               <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-                <div className="bg-green-700 text-white p-4">
+                <div className="bg-red-700 text-white p-4">
                   <h3 className="text-xl font-bold">Program Details</h3>
                 </div>
                 <div className="p-6">
@@ -129,7 +129,7 @@ const FoundationBuilderPage = () => {
                   
                   <Link 
                     to="/contact"
-                    className="block w-full bg-green-700 text-white text-center py-3 rounded-lg font-semibold hover:bg-green-800 transition duration-300"
+                    className="block w-full bg-red-700 text-white text-center py-3 rounded-lg font-semibold hover:bg-green-800 transition duration-300"
                   >
                     Enroll Now
                   </Link>
@@ -143,7 +143,7 @@ const FoundationBuilderPage = () => {
       {/* Program Features */}
       <section ref={addToRefs} className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center text-green-700">Program Features</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center text-black-700">Program Features</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -224,7 +224,7 @@ const FoundationBuilderPage = () => {
       {/* Class-wise Programs */}
       <section ref={addToRefs} className="py-16 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center text-green-700">Class-wise Programs</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center text-black-700">Class-wise Programs</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
@@ -277,7 +277,7 @@ const FoundationBuilderPage = () => {
       {/* Success Stories */}
       <section ref={addToRefs} className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center text-green-700">Success Stories</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center text-black-700">Success Stories</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -317,7 +317,7 @@ const FoundationBuilderPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-green-700 to-black text-white">
+      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-red-700 to-black text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">Build a Strong Foundation for Your Child's Future</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">

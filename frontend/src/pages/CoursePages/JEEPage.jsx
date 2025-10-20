@@ -43,7 +43,7 @@ const JEEPage = () => {
   return (
     <div className="pt-16 bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-black to-blue-700 text-white py-20">
+      <section className="bg-gradient-to-r from-black to-gray-700 text-white py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">JEE – Your Gateway to India's Top Engineering Colleges</h1>
           <p className="text-xl max-w-3xl">
@@ -57,13 +57,13 @@ const JEEPage = () => {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row gap-12">
             <div className="md:w-2/3">
-              <h2 className="text-3xl font-bold mb-6 text-blue-700">Course Overview</h2>
+              <h2 className="text-3xl font-bold mb-6 text-black-700">Course Overview</h2>
               <p className="text-gray-700 mb-6">
                 The JEE is held in two stages – JEE Main and JEE Advanced – and together, they decide your entry into India's IITs, NITs, IIITs, and other prestigious engineering institutes.
               </p>
               
               <div className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-blue-700">What JEE Means for You:</h3>
+                <h3 className="text-xl font-bold mb-4 text-black-700">What JEE Means for You:</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <FaCheckCircle className="text-blue-500 mt-1 mr-2" />
@@ -81,7 +81,7 @@ const JEEPage = () => {
               </div>
               
               <div className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-blue-700">JEE Structure:</h3>
+                <h3 className="text-xl font-bold mb-4 text-black-700">JEE Structure:</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <FaCheckCircle className="text-blue-500 mt-1 mr-2" />
@@ -105,7 +105,7 @@ const JEEPage = () => {
             
             <div className="md:w-1/3">
               <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-                <div className="bg-blue-700 text-white p-4">
+                <div className="bg-red-700 text-white p-4">
                   <h3 className="text-xl font-bold">Course Details</h3>
                 </div>
                 <div className="p-6">
@@ -143,7 +143,7 @@ const JEEPage = () => {
                   
                   <Link 
                     to="/contact"
-                    className="block w-full bg-blue-700 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-300"
+                    className="block w-full bg-red-700 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-300"
                   >
                     Enroll Now
                   </Link>
@@ -157,7 +157,7 @@ const JEEPage = () => {
       {/* Curriculum */}
       <section ref={addToRefs} className="py-16 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center text-blue-700">Curriculum</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center text-black-700">Curriculum</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -259,7 +259,7 @@ const JEEPage = () => {
       {/* Teaching Methodology */}
       <section ref={addToRefs} className="py-16 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center text-blue-700">Our Teaching Methodology</h2>
+          <h2 className="text-3xl font-bold mb-10 text-center text-black-700">Our Teaching Methodology</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
@@ -306,7 +306,7 @@ const JEEPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-blue-700 to-black text-white">
+      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-red-700 to-black text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Begin Your Engineering Journey?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">

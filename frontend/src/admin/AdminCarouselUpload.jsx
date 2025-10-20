@@ -100,11 +100,10 @@ const AdminCarouselUpload = () => {
         imageUrl: finalImageUrl,
         description,
         link,
-        order: parseInt(order) || 0
+        order
       };
       
       if (editingId) {
-        // Update existing carousel ad
         await axios.put(`/api/carousel/${editingId}`, adData, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -112,22 +111,22 @@ const AdminCarouselUpload = () => {
         });
         toast.success('Carousel ad updated successfully!');
       } else {
-        // Create new carousel ad
         await axios.post('/api/carousel', adData, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        toast.success('Carousel ad created successfully!');
+        toast.success('Carousel ad added successfully!');
       }
       
       resetForm();
       fetchCarouselAds();
     } catch (error) {
-      console.error('Error submitting carousel ad:', error);
-      toast.error('Failed to submit carousel ad');
+      console.error('Error saving carousel ad:', error);
+      toast.error('Failed to save carousel ad. Please try again.');
     } finally {
       setLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -198,67 +197,65 @@ const AdminCarouselUpload = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter title"
             required
           />
         </div>
         
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
-            Image
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Image Upload
           </label>
-          <div className="flex items-center">
-            <input
-              type="file"
-              id="image"
-              ref={fileInputRef}
-              className="hidden"
-              onChange={handleFileChange}
-              accept="image/*"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current.click()}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-            >
-              <FaUpload className="mr-2" /> Upload Image
-            </button>
-            <span className="ml-3 text-sm text-gray-600">
-              {imageFile ? imageFile.name : 'No file selected'}
-            </span>
-          </div>
-          
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-              <div
-                className="bg-blue-600 h-2.5 rounded-full"
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
-            </div>
-          )}
-          
-          <div className="mt-2">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="imageUrl">
-              Or Image URL
-            </label>
-            <input
-              type="text"
-              id="imageUrl"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-          
-          {imageUrl && (
-            <div className="mt-2">
-              <img
-                src={imageUrl}
-                alt="Preview"
-                className="max-w-xs h-auto border rounded"
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center">
+              <input
+                type="file"
+                id="imageFile"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
               />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current.click()}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+              >
+                <FaUpload className="mr-2" /> Upload Image
+              </button>
+              <span className="ml-3 text-sm text-gray-600">
+                {imageFile ? imageFile.name : 'No file selected'}
+              </span>
             </div>
-          )}
+            
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-blue-600 h-2.5 rounded-full" 
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+                <p className="text-xs text-gray-600 mt-1">Uploading: {uploadProgress}%</p>
+              </div>
+            )}
+            
+            <p className="text-xs text-gray-500 mt-1">
+              For best quality, use high-resolution images (at least 1200x800 pixels)
+            </p>
+          </div>
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="imageUrl">
+            Or Image URL (optional if uploading file)
+          </label>
+          <input
+            type="url"
+            id="imageUrl"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="Enter image URL"
+          />
         </div>
         
         <div className="mb-4">
@@ -270,8 +267,9 @@ const AdminCarouselUpload = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
             rows="3"
-          ></textarea>
+          />
         </div>
         
         <div className="mb-4">
@@ -279,12 +277,12 @@ const AdminCarouselUpload = () => {
             Link URL (optional)
           </label>
           <input
-            type="text"
+            type="url"
             id="link"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            placeholder="https://example.com"
+            placeholder="Enter link URL"
           />
         </div>
         
@@ -297,91 +295,314 @@ const AdminCarouselUpload = () => {
             id="order"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={order}
-            onChange={(e) => setOrder(e.target.value)}
+            onChange={(e) => setOrder(parseInt(e.target.value))}
             min="0"
           />
         </div>
         
-        <div className="flex items-center justify-between">
+        <div className="mb-4">
+          {imageUrl && (
+            <div className="mb-4">
+              <p className="text-sm font-bold mb-2">Image Preview:</p>
+              <img 
+                src={imageUrl} 
+                alt="Preview" 
+                className="max-w-full h-auto max-h-40 rounded border"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/300x200?text=Invalid+Image+URL';
+                }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="flex gap-2">
           <button
             type="submit"
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className="bg-[#cb1517] hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             disabled={loading}
           >
-            {loading ? 'Processing...' : editingId ? 'Update' : 'Submit'}
+            {loading ? 'Saving...' : editingId ? 'Update Ad' : 'Add Ad'}
           </button>
           
           {editingId && (
             <button
               type="button"
-              onClick={resetForm}
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={resetForm}
             >
               Cancel
             </button>
           )}
         </div>
       </form>
-      
+
       <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Existing Carousel Ads</h2>
-        {loading && !carouselAds.length ? (
+        <h3 className="text-lg font-bold mb-4">Existing Carousel Ads</h3>
+        {loading ? (
           <p>Loading...</p>
+        ) : carouselAds.length === 0 ? (
+          <p>No carousel ads found. Add your first one above!</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {carouselAds.map((ad) => (
-              <div
-                key={ad._id}
-                className={`border rounded-lg overflow-hidden ${
-                  ad.isActive ? 'border-green-500' : 'border-red-500'
-                }`}
+              <div 
+                key={ad._id} 
+                className={`border rounded-lg overflow-hidden ${!ad.isActive ? 'opacity-60' : ''}`}
               >
-                <img
-                  src={ad.imageUrl}
-                  alt={ad.title}
-                  className="w-full h-48 object-cover"
+                <img 
+                  src={ad.imageUrl} 
+                  alt={ad.title} 
+                  className="w-full h-40 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/300x200?text=Invalid+Image+URL';
+                  }}
                 />
                 <div className="p-4">
-                  <h3 className="font-bold text-lg">{ad.title}</h3>
-                  {ad.description && <p className="text-gray-700 mt-1">{ad.description}</p>}
-                  {ad.link && (
-                    <a
-                      href={ad.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline mt-1 block"
-                    >
-                      {ad.link}
-                    </a>
-                  )}
-                  <p className="text-gray-600 mt-1">Order: {ad.order}</p>
-                  <div className="mt-4 flex justify-between">
-                    <div>
+                  <h4 className="font-bold">{ad.title}</h4>
+                  {ad.description && <p className="text-sm text-gray-600 mt-1">{ad.description}</p>}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="text-xs text-gray-500">Order: {ad.order}</div>
+                    <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(ad)}
-                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-700"
+                        title="Edit"
                       >
                         <FaEdit />
                       </button>
                       <button
+                        onClick={() => handleToggleActive(ad)}
+                        className={`p-1 ${ad.isActive ? 'bg-orange-500' : 'bg-green-500'} text-white rounded hover:${ad.isActive ? 'bg-orange-700' : 'bg-green-700'}`}
+                        title={ad.isActive ? 'Deactivate' : 'Activate'}
+                      >
+                        {ad.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                      <button
                         onClick={() => handleDelete(ad._id)}
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        className="p-1 bg-red-500 text-white rounded hover:bg-red-700"
+                        title="Delete"
                       >
                         <FaTrash />
                       </button>
                     </div>
-                    <button
-                      onClick={() => handleToggleActive(ad)}
-                      className={`${
-                        ad.isActive
-                          ? 'bg-red-500 hover:bg-red-700'
-                          : 'bg-green-500 hover:bg-green-700'
-                      } text-white font-bold py-1 px-2 rounded`}
-                    >
-                      {ad.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 className="text-xl font-bold mb-4">{editingId ? 'Edit' : 'Add New'} Carousel Ad</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter title"
+            required
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Image Upload
+          </label>
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center">
+              <input
+                type="file"
+                id="imageFile"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current.click()}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+              >
+                <FaUpload className="mr-2" /> Upload Image
+              </button>
+              <span className="ml-3 text-sm text-gray-600">
+                {imageFile ? imageFile.name : 'No file selected'}
+              </span>
+            </div>
+            
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-blue-600 h-2.5 rounded-full" 
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+                <p className="text-xs text-gray-600 mt-1">Uploading: {uploadProgress}%</p>
+              </div>
+            )}
+            
+            <p className="text-xs text-gray-500 mt-1">
+              For best quality, use high-resolution images (at least 1200x800 pixels)
+            </p>
+          </div>
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="imageUrl">
+            Or Image URL (optional if uploading file)
+          </label>
+          <input
+            type="url"
+            id="imageUrl"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="Enter image URL"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+            Description (optional)
+          </label>
+          <textarea
+            id="description"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
+            rows="3"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="link">
+            Link URL (optional)
+          </label>
+          <input
+            type="url"
+            id="link"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="Enter link URL"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="order">
+            Display Order
+          </label>
+          <input
+            type="number"
+            id="order"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={order}
+            onChange={(e) => setOrder(parseInt(e.target.value))}
+            min="0"
+          />
+        </div>
+        
+        <div className="mb-4">
+          {imageUrl && (
+            <div className="mb-4">
+              <p className="text-sm font-bold mb-2">Image Preview:</p>
+              <img 
+                src={imageUrl} 
+                alt="Preview" 
+                className="max-w-full h-auto max-h-40 rounded border"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/300x200?text=Invalid+Image+URL';
+                }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            className="bg-[#cb1517] hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : editingId ? 'Update Ad' : 'Add Ad'}
+          </button>
+          
+          {editingId && (
+            <button
+              type="button"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={resetForm}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+
+      <div className="mt-8">
+        <h3 className="text-lg font-bold mb-4">Existing Carousel Ads</h3>
+        {loading ? (
+          <p>Loading...</p>
+        ) : carouselAds.length === 0 ? (
+          <p>No carousel ads found. Add your first one above!</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {carouselAds.map((ad) => (
+              <div 
+                key={ad._id} 
+                className={`border rounded-lg overflow-hidden ${!ad.isActive ? 'opacity-60' : ''}`}
+              >
+                <img 
+                  src={ad.imageUrl} 
+                  alt={ad.title} 
+                  className="w-full h-40 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/300x200?text=Invalid+Image+URL';
+                  }}
+                />
+                <div className="p-4">
+                  <h4 className="font-bold">{ad.title}</h4>
+                  {ad.description && <p className="text-sm text-gray-600 mt-1">{ad.description}</p>}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="text-xs text-gray-500">Order: {ad.order}</div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEdit(ad)}
+                        className="p-1 bg-blue-500 text-white rounded hover:bg-blue-700"
+                        title="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleToggleActive(ad)}
+                        className={`p-1 ${ad.isActive ? 'bg-orange-500' : 'bg-green-500'} text-white rounded hover:${ad.isActive ? 'bg-orange-700' : 'bg-green-700'}`}
+                        title={ad.isActive ? 'Deactivate' : 'Activate'}
+                      >
+                        {ad.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(ad._id)}
+                        className="p-1 bg-red-500 text-white rounded hover:bg-red-700"
+                        title="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

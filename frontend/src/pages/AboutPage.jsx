@@ -81,7 +81,7 @@ const AboutPage = () => {
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
               <img 
-                src="https://images.unsplash.com/photo-1743341942781-14f3c65603c4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyMHx8fGVufDB8fHx8fA%3D%3D" 
+                src="/VTC_ABOUT.png" 
                 alt="VTC SMART CLASS Campus" 
                 className="rounded-lg shadow-xl w-full"
               />
@@ -89,7 +89,7 @@ const AboutPage = () => {
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold mb-6 text-gray-700">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                VTC SMART CLASS was founded in 2009 by Mr. Vaibhav Panchal with a simple vision: to provide students with a place where learning goes beyond textbooks and becomes an enjoyable, empowering experience. What started as a single classroom has today grown into one of the most trusted and premier educational institutes in Andheri (E) and Vile Parle (E), Mumbai, proudly shaping the academic journeys of thousands of students for more than 17 years.
+                VTC SMART CLASS was founded in 2009 by Mr. Vaibhav Panchal with a simple vision: to provide students with a place where learning goes beyond textbooks and becomes an enjoyable, empowering experience. What started as a single classroom has today grown into one of the most trusted and premier educational institutes in Vile Parle (E), Mumbai, proudly shaping the academic journeys of thousands of students for more than 17 years.
               </p>
               <p className="text-gray-700 mb-4">
                 Our name carries the identity and values of our founder, but more importantly, it represents our commitment to quality education, innovation, and trust. VTC SMART CLASS is also a certified Member of the Maharashtra CLASS Association, further reflecting our credibility and standing in the education sector.
@@ -137,73 +137,152 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-700"></div>
+        <div className="relative">
+  {/* Timeline Line */}
+  <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-700"></div>
 
-            {/* Timeline Content */}
-            <div ref={timelineRef} className="relative z-10">
-              {/* Always visible timeline items */}
-              <div className="timeline-item mb-12 flex justify-between items-center">
-                <div className="w-5/12 pr-8 text-right">
-                  <h3 className="text-xl font-bold text-gray-700">2009</h3>
-                  <p className="text-gray-700 mt-2">Founded by Mr. Vaibhav Panchal as a single classroom in Mumbai.</p>
-                </div>
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                <div className="w-5/12 pl-8"></div>
-              </div>
+  {/* Timeline Content */}
+  <div ref={timelineRef} className="relative z-10">
+    {/* Timeline Item 1 - Text on left, Image on right */}
+    <div className="timeline-item mb-12 flex justify-between items-center">
+      <div className="w-5/12 pr-8 text-right">
+        <h3 className="text-xl font-bold text-gray-700">2013</h3>
+        <p className="text-gray-700 mt-2">Founded by Mr. Vaibhav Panchal as a single classroom in Mumbai.</p>
+      </div>
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+      <div className="w-5/12 pl-8">
+        <img 
+          src="/2013.jpg" 
+          alt="Foundation in 2009" 
+          className="w-full h-48 object-cover object-top  rounded-lg shadow-lg"
+        />
+      </div>
+    </div>
 
-              <div className="timeline-item mb-12 flex justify-between items-center">
-                <div className="w-5/12 pr-8"></div>
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                <div className="w-5/12 pl-8">
-                  <h3 className="text-xl font-bold text-gray-700">2015</h3>
-                  <p className="text-gray-700 mt-2">Expanded to multiple locations in Andheri (E) and Vile Parle (E), Mumbai.</p>
-                </div>
-              </div>
+    {/* Timeline Item 2 - Image on left, Text on right */}
+    <div className="timeline-item mb-12 flex justify-between items-center">
+      <div className="w-5/12 pr-8">
+        <img 
+          src="/2015.jpg" 
+          alt="Expansion in 2015" 
+          className="w-full h-48 object-cover object-center rounded-lg shadow-lg"
+          style={{ objectPosition: "center 30%" }}
+        />
+      </div>
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+      <div className="w-5/12 pl-8">
+        <h3 className="text-xl font-bold text-gray-700">2015</h3>
+        <p className="text-gray-700 mt-2">Expanded to multiple locations in Andheri (E) and Vile Parle (E), Mumbai.</p>
+      </div>
+    </div>
 
-              <div className="timeline-item mb-12 flex justify-between items-center">
-                <div className="w-5/12 pr-8 text-right">
-                  <h3 className="text-xl font-bold text-gray-700">2018</h3>
-                  <p className="text-gray-700 mt-2">Became a certified Member of the Maharashtra CLASS Association.</p>
-                </div>
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                <div className="w-5/12 pl-8"></div>
-              </div>
+    {/* Timeline Item 3 - Text on left, Image on right */}
+    <div className="timeline-item mb-12 flex justify-between items-center">
+      <div className="w-5/12 pr-8 text-right">
+        <h3 className="text-xl font-bold text-gray-700">2018</h3>
+        <p className="text-gray-700 mt-2">Became a certified Member of the Maharashtra CLASS Association.</p>
+      </div>
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+      <div className="w-5/12 pl-8">
+        <img 
+          src="/2018.jpg" 
+          alt="Certification in 2018" 
+          className="w-full h-48 object-cover object-center rounded-lg shadow-lg"
+          style={{ objectPosition: "center 17%" }}
+        />
+      </div>
+    </div>
 
-              {/* Conditional timeline items (shown only when "Read More" is clicked) */}
-              {showFullCareer && (
-                <>
-                  <div className="timeline-item mb-12 flex justify-between items-center">
-                    <div className="w-5/12 pr-8"></div>
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                    <div className="w-5/12 pl-8">
-                      <h3 className="text-xl font-bold text-gray-700">2020</h3>
-                      <p className="text-gray-700 mt-2">Introduced state-of-the-art Audio-Visual rooms and SMART Interactive Classrooms.</p>
-                    </div>
-                  </div>
-
-                  <div className="timeline-item mb-12 flex justify-between items-center">
-                    <div className="w-5/12 pr-8 text-right">
-                      <h3 className="text-xl font-bold text-gray-700">2022</h3>
-                      <p className="text-gray-700 mt-2">Expanded course offerings to include specialized programs for competitive exams.</p>
-                    </div>
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                    <div className="w-5/12 pl-8"></div>
-                  </div>
-
-                  <div className="timeline-item mb-12 flex justify-between items-center">
-                    <div className="w-5/12 pr-8"></div>
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full"></div>
-                    <div className="w-5/12 pl-8">
-                      <h3 className="text-xl font-bold text-gray-700">Present</h3>
-                      <p className="text-gray-700 mt-2">Continuing to shape futures, build confidence, and inspire success stories across Mumbai.</p>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+    {/* Conditional timeline items */}
+    {showFullCareer && (
+      <>
+        {/* Timeline Item 4 - Image on left, Text on right */}
+        <div className="timeline-item mb-12 flex justify-between items-center">
+          <div className="w-5/12 pr-8">
+            <img 
+              src="/2020.jpg" 
+              alt="Technology upgrade in 2020" 
+              className="w-full h-48 object-cover object-top rounded-lg shadow-lg"
+              style={{ objectPosition: "center 20%" }}
+            />
           </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+          <div className="w-5/12 pl-8">
+            <h3 className="text-xl font-bold text-gray-700">2020</h3>
+            <p className="text-gray-700 mt-2">Introduced state-of-the-art Audio-Visual rooms and SMART Interactive Classrooms.</p>
+          </div>
+        </div>
+
+        {/* Timeline Item 5 - Text on left, Image on right */}
+        <div className="timeline-item mb-12 flex justify-between items-center">
+          <div className="w-5/12 pr-8 text-right">
+            <h3 className="text-xl font-bold text-gray-700">2022</h3>
+            <p className="text-gray-700 mt-2">Expanded course offerings to include specialized programs for competitive exams.</p>
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+          <div className="w-5/12 pl-8">
+            <img 
+              src="/2022.jpg" 
+              alt="Course expansion in 2022" 
+              className="w-full h-48 object-cover  rounded-lg shadow-lg"
+              style={{ objectPosition: "center 30%" }}
+            />
+          </div>
+        </div>
+
+
+            <div className="timeline-item mb-12 flex justify-between items-center">
+          <div className="w-5/12 pr-8">
+            <img 
+              src="/2024.jpg" 
+              alt="Technology upgrade in 2024" 
+              className="w-full h-48 object-cover  rounded-lg shadow-lg"
+              style={{ objectPosition: "center 20%" }}
+            />
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+          <div className="w-5/12 pl-8">
+            <h3 className="text-xl font-bold text-gray-700">2024</h3>
+            <p className="text-gray-700 mt-2">Introduced state-of-the-art Audio-Visual rooms and SMART Interactive Classrooms.</p>
+          </div>
+        </div>
+
+        {/*  */}
+        <div className="timeline-item mb-12 flex justify-between items-center">
+          <div className="w-5/12 pr-8 text-right">
+            <h3 className="text-xl font-bold text-gray-700">2025</h3>
+            <p className="text-gray-700 mt-2">Expanded course offerings to include specialized programs for competitive exams.</p>
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+          <div className="w-5/12 pl-8">
+            <img 
+              src="/26.jpg" 
+              alt="VTC events" 
+              className="w-full h-48 object-cover rounded-lg shadow-lg"
+            />
+          </div>
+        </div>
+
+        {/* Timeline Item 6 - Image on left, Text on right */}
+        <div className="timeline-item mb-12 flex justify-between items-center">
+          <div className="w-5/12 pr-8">
+            <img 
+              src="/1.jpg" 
+              alt="Current achievements" 
+              className="w-full h-48 object-cover rounded-lg shadow-lg"
+            />
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-700 rounded-full z-10"></div>
+          <div className="w-5/12 pl-8">
+            <h3 className="text-xl font-bold text-gray-700">Present</h3>
+            <p className="text-gray-700 mt-2">Continuing to shape futures, build confidence, and inspire success stories across Mumbai.</p>
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+</div>
+
 
           {/* Read More Button */}
           <div className="text-center mt-8">
@@ -218,54 +297,7 @@ const AboutPage = () => {
       </section>
 
       {/* Team Section */}
-      <section ref={addToRefs} className="py-16 px-4 bg-gray-100">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#663399]">Some Moment</h2>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-           some beautiful moments.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Team Member 1 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
-              <img src="../../public/36.jpg" alt="Team Member" className="w-full h-64 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl text-center font-bold mb-1 text-[#663399]">2021</h3>
-               
-              </div>
-            </div>
-
-            {/* Team Member 2 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
-              <img src="../../public/35.jpg" alt="Team Member" className="w-full h-64 object-cover" />
-            <div className="p-6">
-                <h3 className="text-xl text-center font-bold mb-1 text-[#663399]">2022</h3>
-               
-              </div>
-            </div>
-
-            {/* Team Member 3 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
-              <img src="../../public/49.jpg" alt="Team Member" className="w-full h-64 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl text-center font-bold mb-1 text-[#663399]">2023</h3>
-               
-              </div>
-            </div>
-
-            {/* Team Member 4 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
-              <img src="../../public/34.jpg" alt="Team Member" className="w-full h-64 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl text-center font-bold mb-1 text-[#663399]">2024</h3>
-               
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+  
     </div>
   );
 };

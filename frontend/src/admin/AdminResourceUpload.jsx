@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { FaList } from 'react-icons/fa';
 
 const AdminResourceUpload = () => {
   const [title, setTitle] = useState('');
@@ -43,7 +45,15 @@ const AdminResourceUpload = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-bold mb-4">Add New Resource</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Add New Resource</h2>
+        <Link 
+          to="/admin/resources/manage" 
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
+        >
+          <FaList className="mr-2" /> Manage Resources
+        </Link>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">

@@ -1,6 +1,46 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:5000';
+
+// Create axios instance with base URL
+const api = axios.create({
+  baseURL: API_URL
+});
+
+// Add auth token to requests
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// API endpoints
+export const endpoints = {
+  // Auth
+  login: '/api/auth/login',
+  register: '/api/auth/register',
+  
+  // Dashboard
+  dashboardMetrics: '/api/dashboard/metrics',
+  
+  // Events
+  events: '/api/events',
+  adminEvents: '/api/events/admin',
+  
+  // Testimonials
+  testimonials: '/api/testimonials',
+  adminTestimonials: '/api/testimonials/admin',
+  
+  // Students
+  students: '/api/students',
+  
+  // Resources
+  resources: '/api/resources'
+};
+
+export default api;
 
 // Create axios instance with auth header
 const authAPI = axios.create({
@@ -22,7 +62,7 @@ authAPI.interceptors.request.use(
 // Auth API
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+    const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
     }

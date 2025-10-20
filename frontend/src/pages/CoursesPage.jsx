@@ -111,7 +111,7 @@ const CoursesPage = () => {
   return (
     <div className="pt-16 bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-black to-[#663399] text-white py-20">
+      <section className="bg-gradient-to-r from-black to-[#FF0000] text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-6">Our Courses</h1>
           <p className="text-xl max-w-3xl mx-auto">
@@ -191,7 +191,7 @@ const CoursesPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-[#663399] to-black text-white">
+      <section ref={addToRefs} className="py-16 px-4 bg-gradient-to-r from-[#970b0b] to-black text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Start Your Learning Journey?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">

@@ -145,7 +145,7 @@ const ResourcesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-20 px-4 sm:px-6 lg:px-8 text-center">
+      <div className="bg-gradient-to-r from-red-500 to-red-700 py-20 px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl font-extrabold text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
           Learning Resources
         </h1>
@@ -324,7 +324,7 @@ const ResourcesPage = () => {
                 <input
                   type="email"
                   placeholder="Your email address"
-                  className="flex-grow px-4 py-3 rounded-l-full focus:outline-none text-gray-800"
+                  className="flex-grow px-4 py-3 rounded-l-full focus:outline-none text-white-800"
                 />
                 <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-r-full transition duration-300">
                   Subscribe
