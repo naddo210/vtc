@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FaFacebook, 
-  FaTwitter, 
+  
   FaInstagram, 
-  FaLinkedin, 
+
   FaPhone, 
   FaEnvelope, 
   FaMapMarkerAlt, 
@@ -101,18 +101,12 @@ const Footer = () => {
                      className="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 hover:scale-110 transition-all duration-300 shadow-lg">
                     <FaFacebook size={20} />
                   </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
-                     className="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 hover:scale-110 transition-all duration-300 shadow-lg">
-                    <FaTwitter size={20} />
-                  </a>
+                
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
                      className="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 hover:scale-110 transition-all duration-300 shadow-lg">
                     <FaInstagram size={20} />
                   </a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
-                     className="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 hover:scale-110 transition-all duration-300 shadow-lg">
-                    <FaLinkedin size={20} />
-                  </a>
+              
                 </div>
               </div>
             </div>

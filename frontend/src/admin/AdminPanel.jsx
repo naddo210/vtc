@@ -70,27 +70,12 @@ const AdminPanel = () => {
   }
 
   if (error) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-        <button
-          className="bg-purple-600 text-white px-4 py-2 rounded"
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
-          }}
-        >
-          Go to Login
-        </button>
-      </div>
-    );
+    return <Navigate to="/auth-error" replace />;
   }
 
   // Redirect non-admin users
   if (!isAdmin) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth-error" replace />;
   }
 
   return (

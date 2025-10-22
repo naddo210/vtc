@@ -18,6 +18,8 @@ import NEETPage from './pages/CoursePages/NEETPage';
 import JEEPage from './pages/CoursePages/JEEPage';
 import MHTCETPage from './pages/CoursePages/MHTCETPage';
 import FoundationBuilderPage from './pages/CoursePages/FoundationBuilderPage';
+import NotFoundPage from './pages/NotFoundPage';
+import AuthErrorPage from './pages/AuthErrorPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -57,6 +59,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin/*" element={<AdminPanel />} />
             <Route path="/careers" element={<CareersPage />} />
+            <Route path="/auth-error" element={<AuthErrorPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </main>
