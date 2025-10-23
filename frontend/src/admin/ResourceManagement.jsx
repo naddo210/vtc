@@ -18,7 +18,7 @@ const ResourceManagement = () => {
   const fetchResources = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/resources');
+      const response = await axios.get('https://vtct.onrender.com/api/resources');
       setResources(response.data);
     } catch (error) {
       console.error('Error fetching resources:', error);
@@ -59,7 +59,7 @@ const ResourceManagement = () => {
 
     try {
       setLoading(true);
-      await axios.put(`/api/resources/${currentResource._id}`, currentResource);
+      await axios.put(`https://vtct.onrender.com/api/resources/${currentResource._id}`, currentResource);
       toast.success('Resource updated successfully!');
       setEditMode(false);
       setCurrentResource({
@@ -82,7 +82,7 @@ const ResourceManagement = () => {
     if (window.confirm('Are you sure you want to delete this resource?')) {
       try {
         setLoading(true);
-        await axios.delete(`/api/resources/${id}`);
+        await axios.delete(`https://vtct.onrender.com/api/resources/${id}`);
         toast.success('Resource deleted successfully!');
         fetchResources();
       } catch (error) {

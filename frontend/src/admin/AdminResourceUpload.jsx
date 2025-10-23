@@ -21,7 +21,7 @@ const AdminResourceUpload = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post('/api/resources', {
+      const response = await axios.post('https://vtct.onrender.com/api/resources', {
         title,
         imageUrl,
         driveLink,

@@ -81,7 +81,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCarouselAds = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/carousel');
+        const response = await axios.get('https://vtct.onrender.com/api/carousel');
         if (response.data && response.data.length > 0) {
           setCarouselAds(response.data);
         }
