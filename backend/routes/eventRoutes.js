@@ -77,7 +77,7 @@ router.post('/', protect, adminOnly, upload.single('image'), function(req, res) 
   
   const event = new Event({
     title,
-    image: `http://localhost:5000/uploads/${req.file.filename}`,
+    image: `https://vtct.onrender.com/uploads/${req.file.filename}`,
     isActive: isActive === 'true'
   });
   
