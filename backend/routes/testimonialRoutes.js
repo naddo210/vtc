@@ -88,7 +88,7 @@ const testimonial = new Testimonial({
   company,
   text,
   rating: Number(rating) || 5,
-  image: `https://vtcdd.onrender.com/uploads/${req.file.filename}`,
+  image: `https://vtct.onrender.com/uploads/${req.file.filename}`,
   isImageOnly: isImageOnly === 'true',
   displayOrder: Number(displayOrder) || 0,
   isActive: true
@@ -120,7 +120,7 @@ router.put('/:id', protect, adminOnly, upload.single('image'), function(req, res
       testimonial.isActive = isActive !== undefined ? isActive : testimonial.isActive;
       
      if (req.file) {
-  testimonial.image = `https://vtcdd.onrender.com/uploads/${req.file.filename}`;
+  testimonial.image = `https://vtct.onrender.com/uploads/${req.file.filename}`;
 }
 
       
