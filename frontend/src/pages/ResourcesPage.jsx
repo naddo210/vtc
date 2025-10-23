@@ -25,9 +25,10 @@ const ResourcesPage = () => {
     const fetchResources = async () => {
       try {
         const response = await axios.get('/api/resources');
-        if (response.data && response.data.length > 0) {
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           setResources(response.data);
         } else {
+          console.log('No resources found or invalid data format, using fallback data');
           setResources(resourcesData); // Fallback to sample data
         }
       } catch (error) {
