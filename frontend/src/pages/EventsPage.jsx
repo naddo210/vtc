@@ -10,10 +10,17 @@ const EventsPage = () => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('/api/events');
-        setEvents(response.data);
+        // Ensure response.data is an array before setting state
+        if (Array.isArray(response.data)) {
+          setEvents(response.data);
+        } else {
+          console.error('Expected an array of events but got:', response.data);
+          setEvents([]); // Set to empty array as fallback
+        }
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
+        setEvents([]); // Set to empty array on error
         setLoading(false);
       }
     };
