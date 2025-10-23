@@ -67,7 +67,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const testimonialResponse = await axios.get('/api/testimonials');
+        const testimonialResponse = await axios.get('https://vtct.onrender.com/api/testimonials');
         setTestimonials(testimonialResponse.data);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
