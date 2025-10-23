@@ -82,17 +82,18 @@ router.post('/', protect, adminOnly, upload.single('image'), function(req, res) 
     return res.status(400).json({ message: 'Image is required' });
   }
   
-  const testimonial = new Testimonial({
-    name,
-    role,
-    company,
-    text,
-    rating: Number(rating) || 5,
-    image: `https://vtct.onrender.com/uploads/${req.file.filename}`,
-    isImageOnly: isImageOnly === 'true',
-    displayOrder: Number(displayOrder) || 0,
-    isActive: true
-  });
+const testimonial = new Testimonial({
+  name,
+  role,
+  company,
+  text,
+  rating: Number(rating) || 5,
+  image: `https://vtcdd.onrender.com/uploads/${req.file.filename}`,
+  isImageOnly: isImageOnly === 'true',
+  displayOrder: Number(displayOrder) || 0,
+  isActive: true
+});
+
   
   testimonial.save()
     .then(createdTestimonial => res.status(201).json(createdTestimonial))
@@ -118,9 +119,10 @@ router.put('/:id', protect, adminOnly, upload.single('image'), function(req, res
       testimonial.rating = Number(rating) || testimonial.rating;
       testimonial.isActive = isActive !== undefined ? isActive : testimonial.isActive;
       
-      if (req.file) {
-        testimonial.image = `https://vtct.onrender.com/uploads/${req.file.filename}`;
-      }
+     if (req.file) {
+  testimonial.image = `https://vtcdd.onrender.com/uploads/${req.file.filename}`;
+}
+
       
       return testimonial.save();
     })

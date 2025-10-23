@@ -24,10 +24,14 @@ const PORT =process.env.PORT|| 5000; // Using port 5000 as requested
 
 // Middleware
 app.use(cors({
-  origin: ['https://vtcdd.onrender.com'], // ✅ allow your frontend domain
+  origin: [
+    'https://vtcdd.onrender.com',
+    'http://localhost:5173'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
+
 app.use(express.json());
 
 // Public Routes
