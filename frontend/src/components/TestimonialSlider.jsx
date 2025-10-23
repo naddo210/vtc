@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { API_URL } from '../api/index';
 
 const TestimonialSlider = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -67,12 +68,17 @@ const TestimonialSlider = () => {
           }}
         >
           <img
-            src={testimonial.image}
+            src={testimonial.image.startsWith('http') ? testimonial.image : `${API_URL}${testimonial.image}`}
             alt="Testimonial"
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
               objectFit: 'contain'
+            }}
+            onError={(e) => {
+              console.error('Image failed to load:', testimonial.image);
+              e.target.onerror = null;
+              e.target.src = '/logo.png'; // Fallback image
             }}
           />
         </div>
