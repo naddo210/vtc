@@ -85,15 +85,17 @@ const AdminStudentData = () => {
       await axios.put(`https://vtct.onrender.com/api/students/${editingStudent}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
-      // Update the students list
-      const updatedStudents = (Array.isArray(students) ? students : []).map(student => 
-        student._id === editingStudent ? { ...student, ...formData } : student
-      );
-      setStudents(updatedStudents);
-      
+
+      // Re-fetch the latest list from backend to ensure UI reflects DB
+      const listResponse = await axios.get("https://vtct.onrender.com/api/students", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const fresh = listResponse?.data;
+      setStudents(Array.isArray(fresh) ? fresh : []);
+
       // Reset form
       handleCancel();
+      setError(null);
     } catch (err) {
       setError("Failed to update student data");
     }
