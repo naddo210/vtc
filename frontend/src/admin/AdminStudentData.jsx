@@ -25,13 +25,15 @@ const AdminStudentData = () => {
     const fetchStudents = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("/api/students", {
+        const response = await axios.get("https://vtct.onrender.com/api/students", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setStudents(response.data);
+        const data = response?.data;
+        setStudents(Array.isArray(data) ? data : []);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch student data");
+        setStudents([]);
         setLoading(false);
       }
     };
@@ -80,12 +82,12 @@ const AdminStudentData = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`/api/students/${editingStudent}`, formData, {
+      await axios.put(`https://vtct.onrender.com/api/students/${editingStudent}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Update the students list
-      const updatedStudents = students.map(student => 
+      const updatedStudents = (Array.isArray(students) ? students : []).map(student => 
         student._id === editingStudent ? { ...student, ...formData } : student
       );
       setStudents(updatedStudents);
@@ -102,12 +104,12 @@ const AdminStudentData = () => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`/api/students/${id}`, {
+        await axios.delete(`https://vtct.onrender.com/api/students/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
         // Remove from students list
-        setStudents(students.filter(student => student._id !== id));
+        setStudents((Array.isArray(students) ? students : []).filter(student => student._id !== id));
       } catch (err) {
         setError("Failed to delete student");
       }
@@ -115,11 +117,11 @@ const AdminStudentData = () => {
   };
 
   // Filter students based on search term
-  const filteredStudents = students.filter(student => 
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.enrollingCourse.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = Array.isArray(students) ? students.filter(student => 
+    (student.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (student.email || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (student.enrollingCourse || "").toLowerCase().includes(searchTerm.toLowerCase())
+  ) : [];
 
   // Pagination
   const indexOfLastStudent = currentPage * studentsPerPage;
