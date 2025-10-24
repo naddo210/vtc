@@ -69,7 +69,7 @@ router.get('/:id', function(req, res) {
 });
 
 // Create a testimonial
-router.post('/', protect, adminOnly, upload.single('image'), async function(req, res) {
+router.post('/', upload.single('image'), async function(req, res) {
   const { name, role, company, text, rating, isImageOnly, displayOrder } = req.body;
   
   if (!req.file) {
