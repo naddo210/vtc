@@ -135,13 +135,13 @@ const ResourcesPage = () => {
   ];
 
   // Filter resources based on search term and category filter
-  const filteredResources = resources.filter(resource => {
+  const filteredResources = Array.isArray(resources) ? resources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (resource.description && resource.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesFilter = filter === "all" || resource.category === filter;
     
     return matchesSearch && matchesFilter;
-  });
+  }) : [];
 
   return (
     <div className="min-h-screen bg-gray-50">

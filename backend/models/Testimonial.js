@@ -31,6 +31,10 @@ const testimonialSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  cloudinary_id: {
+    type: String,
+    required: false
+  },
   isImageOnly: {
     type: Boolean,
     default: false
@@ -50,5 +54,4 @@ const testimonialSchema = new mongoose.Schema({
 });
 
 const Testimonial = mongoose.model('Testimonial', testimonialSchema);
-
 module.exports = Testimonial;

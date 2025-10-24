@@ -68,7 +68,7 @@ const TestimonialSlider = () => {
           }}
         >
           <img
-            src={testimonial.image.startsWith('http') ? testimonial.image : `${API_URL}${testimonial.image}`}
+            src={testimonial.image}
             alt="Testimonial"
             style={{
               maxWidth: '100%',

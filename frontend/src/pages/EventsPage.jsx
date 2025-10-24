@@ -54,14 +54,14 @@ const EventsPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => (
+            {Array.isArray(events) ? events.map((event) => (
               <div 
                 key={event._id} 
                 className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img 
-                    src={event.image.startsWith('/uploads') ? `/api${event.image}` : event.image} 
+                    src={event.image} 
                     alt={event.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />
@@ -70,7 +70,7 @@ const EventsPage = () => {
                   <h3 className="text-xl font-bold text-gray-800 mb-2">{event.title}</h3>
                 </div>
               </div>
-            ))}
+            )) : []}
           </div>
         )}
       </div>
