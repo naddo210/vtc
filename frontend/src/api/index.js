@@ -17,6 +17,21 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Retry once on 502 Bad Gateway (Render waking up)
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config || {};
+    if (error.response && error.response.status === 502 && !config.__retryOnce) {
+      config.__retryOnce = true;
+      // Wait briefly to allow backend to wake up
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+      return api.request(config);
+    }
+    return Promise.reject(error);
+  }
+);
+
 // API endpoints
 export const endpoints = {
   // Auth

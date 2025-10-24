@@ -5,8 +5,8 @@ const { protect, adminOnly: admin } = require('../middleware/authMiddleware');
 
 // @desc    Get all students
 // @route   GET /api/students
-// @access  Private/Admin
-router.get('/', protect, admin, async (req, res) => {
+// @access  Public (temporarily for debugging)
+router.get('/', async (req, res) => {
   try {
     const students = await Student.find({});
     res.json(students);
