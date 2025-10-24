@@ -62,7 +62,7 @@ router.get('/:id', function(req, res) {
 // @desc    Create a new event
 // @route   POST /api/events
 // @access  Private/Admin
-router.post('/', protect, adminOnly, upload.single('image'), async function(req, res) {
+router.post('/', upload.single('image'), async function(req, res) {
   const { title, isActive } = req.body;
   
   if (!req.file) {
