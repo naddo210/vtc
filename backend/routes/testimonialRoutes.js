@@ -4,16 +4,10 @@ const Testimonial = require('../models/Testimonial');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('../config/cloudinary');
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, `testimonial-${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// Configure multer for memory storage (for Cloudinary)
+const storage = multer.memoryStorage();
 
 // Configure file filter
 const fileFilter = function(req, file, cb) {
@@ -75,63 +69,90 @@ router.get('/:id', function(req, res) {
 });
 
 // Create a testimonial
-router.post('/', protect, adminOnly, upload.single('image'), function(req, res) {
+router.post('/', protect, adminOnly, upload.single('image'), async function(req, res) {
   const { name, role, company, text, rating, isImageOnly, displayOrder } = req.body;
   
   if (!req.file) {
     return res.status(400).json({ message: 'Image is required' });
   }
   
-const testimonial = new Testimonial({
-  name,
-  role,
-  company,
-  text,
-  rating: Number(rating) || 5,
-  image: `https://vtct.onrender.com/uploads/${req.file.filename}`,
-  isImageOnly: isImageOnly === 'true',
-  displayOrder: Number(displayOrder) || 0,
-  isActive: true
-});
+  try {
+    // Convert buffer to data URL for Cloudinary upload
+    const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      folder: 'vtc/testimonials',
+      resource_type: 'image',
+      quality: 'auto:best',
+    });
 
-  
-  testimonial.save()
-    .then(createdTestimonial => res.status(201).json(createdTestimonial))
-    .catch(error => res.status(500).json({ message: 'Server Error', error: error.message }));
+    const testimonial = new Testimonial({
+      name,
+      role,
+      company,
+      text,
+      rating: Number(rating) || 5,
+      image: uploadResponse.secure_url,
+      cloudinary_id: uploadResponse.public_id,
+      isImageOnly: isImageOnly === 'true',
+      displayOrder: Number(displayOrder) || 0,
+      isActive: true
+    });
+    
+    const createdTestimonial = await testimonial.save();
+    res.status(201).json(createdTestimonial);
+  } catch (error) {
+    console.error('Error creating testimonial:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 });
 
 // Update a testimonial
-router.put('/:id', protect, adminOnly, upload.single('image'), function(req, res) {
+router.put('/:id', protect, adminOnly, upload.single('image'), async function(req, res) {
   const { name, role, company, text, rating, isActive, isImageOnly, displayOrder } = req.body;
   
-  Testimonial.findById(req.params.id)
-    .then(testimonial => {
-      if (!testimonial) {
-        return res.status(404).json({ message: 'Testimonial not found' });
+  try {
+    const testimonial = await Testimonial.findById(req.params.id);
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+    
+    testimonial.name = name || testimonial.name;
+    testimonial.role = role || testimonial.role;
+    testimonial.company = company || testimonial.company;
+    testimonial.isImageOnly = isImageOnly === 'true';
+    testimonial.displayOrder = Number(displayOrder) || testimonial.displayOrder;
+    testimonial.text = text || testimonial.text;
+    testimonial.rating = Number(rating) || testimonial.rating;
+    testimonial.isActive = isActive !== undefined ? isActive : testimonial.isActive;
+    
+    if (req.file) {
+      // Delete previous image from Cloudinary if it exists
+      if (testimonial.cloudinary_id) {
+        await cloudinary.uploader.destroy(testimonial.cloudinary_id);
       }
       
-      testimonial.name = name || testimonial.name;
-      testimonial.role = role || testimonial.role;
-      testimonial.company = company || testimonial.company;
-      testimonial.isImageOnly = isImageOnly === 'true';
-      testimonial.displayOrder = Number(displayOrder) || testimonial.displayOrder;
-      testimonial.text = text || testimonial.text;
-      testimonial.rating = Number(rating) || testimonial.rating;
-      testimonial.isActive = isActive !== undefined ? isActive : testimonial.isActive;
+      // Convert buffer to data URL for Cloudinary upload
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
       
-     if (req.file) {
-  testimonial.image = `https://vtct.onrender.com/uploads/${req.file.filename}`;
-}
-
+      // Upload to Cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+        folder: 'vtc/testimonials',
+        resource_type: 'image',
+        quality: 'auto:best',
+      });
       
-      return testimonial.save();
-    })
-    .then(updatedTestimonial => {
-      if (updatedTestimonial) {
-        res.json(updatedTestimonial);
-      }
-    })
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+      testimonial.image = uploadResponse.secure_url;
+      testimonial.cloudinary_id = uploadResponse.public_id;
+    }
+    
+    const updatedTestimonial = await testimonial.save();
+    res.json(updatedTestimonial);
+  } catch (error) {
+    console.error('Error updating testimonial:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 });
 
 // Delete a testimonial

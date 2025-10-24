@@ -4,24 +4,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
+const cloudinary = require('../config/cloudinary');
 
-// Configure multer for high-quality image storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '../uploads');
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    // Create unique filename with original extension
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, 'image-' + uniqueSuffix + ext);
-  }
-});
+// Configure multer for memory storage (for Cloudinary)
+const storage = multer.memoryStorage();
 
 // File filter to only allow image files
 const fileFilter = (req, file, cb) => {
@@ -44,24 +30,31 @@ const upload = multer({
 // @route   POST /api/upload
 // @desc    Upload an image
 // @access  Private/Admin
-router.post('/', protect, adminOnly, upload.single('image'), (req, res) => {
+router.post('/', protect, adminOnly, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    // Create URL for the uploaded file
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const relativePath = `/uploads/${req.file.filename}`;
-    const imageUrl = `${baseUrl}${relativePath}`;
+    // Convert buffer to data URL for Cloudinary upload
+    const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      folder: 'vtc',
+      resource_type: 'image',
+      quality: 'auto:best',
+    });
 
     res.status(201).json({
       message: 'Image uploaded successfully',
-      imageUrl: imageUrl,
-      filename: req.file.filename
+      imageUrl: uploadResponse.secure_url,
+      public_id: uploadResponse.public_id,
+      filename: uploadResponse.original_filename
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

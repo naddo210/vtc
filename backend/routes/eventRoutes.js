@@ -4,16 +4,10 @@ const Event = require('../models/Event');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('../config/cloudinary');
 
-// Configure storage
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, `event-${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// Configure multer for memory storage (for Cloudinary)
+const storage = multer.memoryStorage();
 
 const fileFilter = function(req, file, cb) {
   const filetypes = /jpeg|jpg|png|gif/;
@@ -68,54 +62,83 @@ router.get('/:id', function(req, res) {
 // @desc    Create a new event
 // @route   POST /api/events
 // @access  Private/Admin
-router.post('/', protect, adminOnly, upload.single('image'), function(req, res) {
+router.post('/', protect, adminOnly, upload.single('image'), async function(req, res) {
   const { title, isActive } = req.body;
   
   if (!req.file) {
     return res.status(400).json({ message: 'Image is required' });
   }
   
-  const event = new Event({
-    title,
-    image: `https://vtct.onrender.com/uploads/${req.file.filename}`,
-    isActive: isActive === 'true'
-  });
-  
-  event.save()
-    .then(createdEvent => res.status(201).json(createdEvent))
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+  try {
+    // Convert buffer to data URL for Cloudinary upload
+    const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    
+    // Upload to Cloudinary
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      folder: 'vtc/events',
+      resource_type: 'image',
+      quality: 'auto:best',
+    });
+    
+    const event = new Event({
+      title,
+      image: uploadResponse.secure_url,
+      cloudinary_id: uploadResponse.public_id,
+      isActive: isActive === 'true'
+    });
+    
+    const createdEvent = await event.save();
+    res.status(201).json(createdEvent);
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 });
 
 // @desc    Update an event
 // @route   PUT /api/events/:id
 // @access  Private/Admin
-router.put('/:id', protect, adminOnly, upload.single('image'), function(req, res) {
+router.put('/:id', protect, adminOnly, upload.single('image'), async function(req, res) {
   const { title, isActive } = req.body;
   
-  Event.findById(req.params.id)
-    .then(event => {
-      if (!event) {
-        return res.status(404).json({ message: 'Event not found' });
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    
+    event.title = title || event.title;
+    
+    if (req.file) {
+      // Delete previous image from Cloudinary if it exists
+      if (event.cloudinary_id) {
+        await cloudinary.uploader.destroy(event.cloudinary_id);
       }
       
-      event.title = title || event.title;
+      // Convert buffer to data URL for Cloudinary upload
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
       
-      if (req.file) {
-        event.image = `/uploads/${req.file.filename}`;
-      }
+      // Upload to Cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+        folder: 'vtc/events',
+        resource_type: 'image',
+        quality: 'auto:best',
+      });
       
-      if (isActive !== undefined) {
-        event.isActive = isActive === 'true';
-      }
-      
-      return event.save();
-    })
-    .then(updatedEvent => {
-      if (updatedEvent) {
-        res.json(updatedEvent);
-      }
-    })
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+      event.image = uploadResponse.secure_url;
+      event.cloudinary_id = uploadResponse.public_id;
+    }
+    
+    if (isActive !== undefined) {
+      event.isActive = isActive === 'true';
+    }
+    
+    const updatedEvent = await event.save();
+    res.json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 });
 
 // @desc    Delete an event
