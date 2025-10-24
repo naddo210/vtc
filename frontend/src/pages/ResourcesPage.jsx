@@ -24,7 +24,7 @@ const ResourcesPage = () => {
     // Fetch resources from API
     const fetchResources = async () => {
       try {
-        const response = await axios.get('/api/resources');
+        const response = await axios.get('https://vtct.onrender.com/api/resources');
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           setResources(response.data);
         } else {

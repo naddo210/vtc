@@ -9,7 +9,7 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('/api/events');
+        const response = await axios.get('https://vtct.onrender.com/api/events');
         // Ensure response.data is an array before setting state
         if (Array.isArray(response.data)) {
           setEvents(response.data);
