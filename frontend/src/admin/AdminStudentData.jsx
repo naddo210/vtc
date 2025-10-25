@@ -25,15 +25,29 @@ const AdminStudentData = () => {
     const fetchStudents = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://vtct.onrender.com/api/students", {
+        if (!token) {
+          setError("Authentication token not found");
+          setLoading(false);
+          return;
+        }
+        
+        // Set default base URL for axios if needed
+        if (!axios.defaults.baseURL) {
+          axios.defaults.baseURL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5000' 
+            : 'https://vtcdd-api.onrender.com';
+        }
+        
+        console.log("Fetching students with token:", token);
+        const response = await axios.get("/api/students", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data = response?.data;
-        setStudents(Array.isArray(data) ? data : []);
+        console.log("Student data received:", response.data);
+        setStudents(response.data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch student data");
-        setStudents([]);
+        console.error("Error fetching student data:", err);
+        setError(err.response?.data?.message || "Failed to fetch student data");
         setLoading(false);
       }
     };
@@ -82,20 +96,18 @@ const AdminStudentData = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`https://vtct.onrender.com/api/students/${editingStudent}`, formData, {
+      await axios.put(`/api/students/${editingStudent}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
-      // Re-fetch the latest list from backend to ensure UI reflects DB
-      const listResponse = await axios.get("https://vtct.onrender.com/api/students", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const fresh = listResponse?.data;
-      setStudents(Array.isArray(fresh) ? fresh : []);
-
+      
+      // Update the students list
+      const updatedStudents = students.map(student => 
+        student._id === editingStudent ? { ...student, ...formData } : student
+      );
+      setStudents(updatedStudents);
+      
       // Reset form
       handleCancel();
-      setError(null);
     } catch (err) {
       setError("Failed to update student data");
     }
@@ -106,12 +118,12 @@ const AdminStudentData = () => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`https://vtct.onrender.com/api/students/${id}`, {
+        await axios.delete(`/api/students/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
         // Remove from students list
-        setStudents((Array.isArray(students) ? students : []).filter(student => student._id !== id));
+        setStudents(students.filter(student => student._id !== id));
       } catch (err) {
         setError("Failed to delete student");
       }
@@ -119,11 +131,11 @@ const AdminStudentData = () => {
   };
 
   // Filter students based on search term
-  const filteredStudents = Array.isArray(students) ? students.filter(student => 
-    (student.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.email || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.enrollingCourse || "").toLowerCase().includes(searchTerm.toLowerCase())
-  ) : [];
+  const filteredStudents = students.filter(student => 
+    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.enrollingCourse.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Pagination
   const indexOfLastStudent = currentPage * studentsPerPage;

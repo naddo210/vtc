@@ -29,9 +29,14 @@ const StudentZonePage = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess(false);
+    
+    console.log('Submitting student data:', formData);
     
     try {
-      await axios.post('/api/students', formData);
+      // Make sure we're using the correct API endpoint
+      const response = await axios.post('/api/students', formData);
+      console.log('Registration successful:', response.data);
       setSuccess(true);
       setFormData({
         name: '',
@@ -43,6 +48,7 @@ const StudentZonePage = () => {
         enrollingCourse: ''
       });
     } catch (err) {
+      console.error('Registration error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);

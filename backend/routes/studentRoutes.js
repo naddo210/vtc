@@ -5,12 +5,15 @@ const { protect, adminOnly: admin } = require('../middleware/authMiddleware');
 
 // @desc    Get all students
 // @route   GET /api/students
-// @access  Public (temporarily for debugging)
-router.get('/', async (req, res) => {
+// @access  Private/Admin
+router.get('/', protect, admin, async (req, res) => {
   try {
-    const students = await Student.find({});
+    console.log('Admin fetching students, user:', req.user);
+    const students = await Student.find({}).sort({ createdAt: -1 });
+    console.log(`Found ${students.length} students`);
     res.json(students);
   } catch (error) {
+    console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
@@ -20,10 +23,12 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.post('/', async (req, res) => {
   try {
+    console.log('Registering new student:', req.body);
     const { name, age, dob, email, phone, address, enrollingCourse } = req.body;
 
     const studentExists = await Student.findOne({ email });
     if (studentExists) {
+      console.log('Student already exists with email:', email);
       return res.status(400).json({ message: 'Student with this email already exists' });
     }
 
@@ -34,10 +39,12 @@ router.post('/', async (req, res) => {
       email,
       phone,
       address,
-      enrollingCourse
+      enrollingCourse,
+      createdAt: new Date()
     });
 
     if (student) {
+      console.log('Student registered successfully:', student._id);
       res.status(201).json({
         _id: student._id,
         name: student.name,
@@ -48,6 +55,7 @@ router.post('/', async (req, res) => {
       res.status(400).json({ message: 'Invalid student data' });
     }
   } catch (error) {
+    console.error('Error registering student:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
