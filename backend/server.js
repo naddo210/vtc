@@ -22,21 +22,28 @@ connectDB();
 const app = express();
 const PORT =process.env.PORT|| 5000; // Using port 5000 as requested
 
-// Import cors package
-const corsOptions = {
+// CORS middleware - placed before any route handlers
+app.use((req, res, next) => {
+  // Set CORS headers directly on all responses
+  res.header('Access-Control-Allow-Origin', 'https://vtcdd.onrender.com');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight OPTIONS requests immediately
+  if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// Backup CORS handling with the cors package
+app.use(cors({
   origin: 'https://vtcdd.onrender.com',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-};
-
-// Apply CORS middleware with specific options
-app.use(cors(corsOptions));
-
-// Handle OPTIONS preflight requests for all routes
-app.options('*', cors(corsOptions));
+  credentials: true
+}));
 
 app.use(express.json());
 
