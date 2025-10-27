@@ -20,19 +20,34 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const PORT =process.env.PORT|| 5000; // Using port 5000 as requested
+const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ✅ Proper CORS setup (only one middleware)
 app.use(cors({
-  origin: '*', // Allow all origins temporarily to debug
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., mobile apps, Postman)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'https://vtcdd.onrender.com', // your frontend (Render)
+      'http://localhost:5173'       // local dev
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
+// Middleware
 app.use(express.json());
 
-// Public Routes
+// ✅ Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/carousel', carouselAdRoutes);
@@ -45,17 +60,12 @@ app.use('/api/events', eventRoutes);
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Note: Routes made public for testing
-// To re-enable protection, use:
-// app.use('/api/resources', protect, resourceRoutes);
-// app.use('/api/offers', protect, offerRoutes);
-
 // Root route
 app.get('/', (req, res) => {
   res.send('VTC Classes API is running');
 });
 
-// Error handler
+// Global error handler
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
@@ -65,6 +75,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
