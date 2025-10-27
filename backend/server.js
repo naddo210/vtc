@@ -22,27 +22,30 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Proper CORS setup (only one middleware)
+// CORS configuration using the cors package
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (e.g., mobile apps, Postman)
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-
+    
     const allowedOrigins = [
-      'https://vtcdd.onrender.com', // your frontend (Render)
-      'http://localhost:5173'       // local dev
+      'https://vtcdd.onrender.com',
+      'http://localhost:5173'
     ];
-
-    if (allowedOrigins.includes(origin)) {
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, true); // Allow all origins for now to debug
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
+
+// Additional middleware to ensure OPTIONS requests are handled correctly
+app.options('*', cors());
 
 // Middleware
 app.use(express.json());
