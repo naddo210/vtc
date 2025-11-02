@@ -13,10 +13,19 @@ const testimonialRoutes = require('./routes/testimonialRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const { protect } = require('./middleware/authMiddleware');
 
-// Load env vars
-dotenv.config();
+const app = express();
 
-// Connect to database
+// ✅ CORS FIRST
+app.use(cors({
+  origin: ['https://vtcdd.onrender.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+}));
+app.options('*', cors());
+
+// Middleware
+dotenv.config();
 connectDB();
 
 const app = express();
@@ -45,7 +54,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Public Routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/carousel', carouselAdRoutes);
@@ -55,15 +64,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/events', eventRoutes);
 
-// Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Note: Routes made public for testing
-// To re-enable protection, use:
-// app.use('/api/resources', protect, resourceRoutes);
-// app.use('/api/offers', protect, offerRoutes);
-
-// Root route
 app.get('/', (req, res) => {
   res.send('VTC Classes API is running');
 });
@@ -71,13 +73,11 @@ app.get('/', (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-  res.json({
+  res.status(statusCode).json({
     message: err.message,
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
