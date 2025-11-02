@@ -22,16 +22,37 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration
-app.use(cors({
-  origin: ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
-  credentials: true,
-}));
+// CORS configuration - ensuring it works for login
+app.use((req, res, next) => {
+  const allowedOrigins = ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests immediately
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
-// Handle preflight requests
-app.options('*', cors());
+// Disable cors middleware as we're handling it manually
+// app.use(cors({
+//   origin: ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+//   credentials: true,
+// }));
+
+// No need for this as we're handling OPTIONS above
+// app.options('*', cors());
 
 app.use(express.json());
 
