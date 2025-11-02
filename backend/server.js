@@ -22,10 +22,16 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration - most permissive approach
+// CORS configuration with specific allowed origins
 app.use((req, res, next) => {
-  // Allow any origin during development and production
-  res.header('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  // Check if the request origin is in our allowed list
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
