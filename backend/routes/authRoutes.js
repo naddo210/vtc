@@ -80,7 +80,10 @@ router.post('/login', async (req, res) => {
 
     // Validate email & password
     if (!email || !password) {
-      return res.status(400).json({ message: 'Please provide an email and password' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please provide both email and password' 
+      });
     }
 
     // Admin login
@@ -95,7 +98,16 @@ router.post('/login', async (req, res) => {
       // Generate JWT token with admin role
       const token = generateToken(adminUser._id, 'admin');
       
+      // Set cookie with token
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+      });
+      
       return res.status(200).json({
+        success: true,
         _id: adminUser._id,
         name: adminUser.name,
         email: adminUser.email,
@@ -116,7 +128,16 @@ router.post('/login', async (req, res) => {
     // Generate JWT token with user role
     const token = generateToken(regularUser._id, 'user');
     
+    // Set cookie with token for regular users too
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    });
+    
     return res.status(200).json({
+      success: true,
       _id: regularUser._id,
       name: regularUser.name,
       email: regularUser.email,
@@ -127,6 +148,40 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err.message);
     return res.status(500).json({ message: 'Server error during login' });
+  }
+});
+
+// Verify admin status
+router.get('/verify-admin', protect, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+    
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized as admin'
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Admin verified',
+      user: {
+        id: req.user.id,
+        role: req.user.role
+      }
+    });
+  } catch (err) {
+    console.error('Admin verification error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error during verification'
+    });
   }
 });
 

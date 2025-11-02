@@ -5,6 +5,9 @@ import { getResources, createResource, updateResource, deleteResource,
 import AdminOfferUpload from "../admin/AdminOfferUpload";
 import AdminResourceUpload from "../admin/AdminResourceUpload";
 import AdminCarouselUpload from "../admin/AdminCarouselUpload";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("resources");
@@ -14,41 +17,86 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [themeColor, setThemeColor] = useState("#663399");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  
+  const navigate = useNavigate();
+  
+  // Check admin authentication
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      try {
+        setAuthChecking(true);
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          toast.error("Authentication required. Please login.");
+          navigate('/login');
+          return;
+        }
+        
+        const response = await axios.get('https://vtct.onrender.com/api/auth/verify-admin', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true
+        });
+        
+        if (response.data.success) {
+          setIsAdmin(true);
+        } else {
+          toast.error("Admin access required");
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error("Admin verification failed:", error);
+        toast.error("Admin verification failed. Please login again.");
+        localStorage.removeItem('token');
+        navigate('/login');
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+    
+    verifyAdmin();
+  }, [navigate]);
   
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        if (activeTab === "resources") {
-          const data = await getResources();
-          setResources(data);
-        } else {
-          const data = await getOffers();
-          setOffers(data);
-        }
-        setError(null);
-      } catch (err) {
-        setError("Failed to fetch data. Using sample data instead.");
-        // Fallback to sample data if API fails
-        if (activeTab === "resources") {
-          setResources([
-            {
-              id: 1,
-              title: "Web Development Fundamentals",
-              imageUrl: "https://via.placeholder.com/300x200",
-              url: "https://example.com/resource1",
-              category: "web-development"
-            },
-            {
-              id: 2,
-              title: "Data Science Toolkit",
-              imageUrl: "https://via.placeholder.com/300x200",
-              url: "https://example.com/resource2",
-              category: "data-science"
-            }
-          ]);
-        } else {
-          setOffers([
+    // Only fetch data if admin is verified
+    if (isAdmin && !authChecking) {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          if (activeTab === "resources") {
+            const data = await getResources();
+            setResources(data);
+          } else {
+            const data = await getOffers();
+            setOffers(data);
+          }
+          setError(null);
+        } catch (err) {
+          setError("Failed to fetch data. Using sample data instead.");
+          // Fallback to sample data if API fails
+          if (activeTab === "resources") {
+            setResources([
+              {
+                id: 1,
+                title: "Web Development Fundamentals",
+                imageUrl: "https://via.placeholder.com/300x200",
+                url: "https://example.com/resource1",
+                category: "web-development"
+              },
+              {
+                id: 2,
+                title: "Data Science Toolkit",
+                imageUrl: "https://via.placeholder.com/300x200",
+                url: "https://example.com/resource2",
+                category: "data-science"
+              }
+            ]);
+          } else {
+            setOffers([
             {
               id: 1,
               title: "Early Bird Discount",
