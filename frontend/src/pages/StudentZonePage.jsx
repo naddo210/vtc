@@ -34,8 +34,13 @@ const StudentZonePage = () => {
     console.log('Submitting student data:', formData);
     
     try {
-      // Make sure we're using the correct API endpoint
-      const response = await axios.post('/api/students', formData);
+      // Make sure we're using the correct API endpoint with proper CORS handling
+      const response = await axios.post('/api/students', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       console.log('Registration successful:', response.data);
       setSuccess(true);
       setFormData({

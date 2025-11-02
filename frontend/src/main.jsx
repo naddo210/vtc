@@ -9,6 +9,7 @@ import axios from 'axios'
 axios.defaults.baseURL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 
   : 'https://vtcdd-api.onrender.com'
+axios.defaults.withCredentials = true
 
 // Add auth token to all requests
 axios.interceptors.request.use(config => {
@@ -18,6 +19,15 @@ axios.interceptors.request.use(config => {
   }
   return config
 })
+
+// Add response interceptor for error handling
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', error)
+    return Promise.reject(error)
+  }
+)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

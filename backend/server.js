@@ -22,22 +22,26 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS for all routes
+// CORS configuration - proper configuration for credentials
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://vtcdd.onrender.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // Allow specific origins that need credentials
+  const allowedOrigins = ['https://vtcdd.onrender.com', 'http://localhost:5173'];
+  const origin = req.headers.origin;
   
-  // Handle preflight requests
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests immediately
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
   next();
 });
-
-// Fallback CORS handling
-app.use(cors());
 
 app.use(express.json());
 

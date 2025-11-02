@@ -65,7 +65,13 @@ authAPI.interceptors.request.use(
 // Auth API
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
+    const response = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
     }
@@ -78,7 +84,13 @@ export const login = async (email, password) => {
 
 export const register = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/register`, userData);
+    const response = await axios.post(`${API_URL}/api/auth/register`, userData, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Registration error:', error);

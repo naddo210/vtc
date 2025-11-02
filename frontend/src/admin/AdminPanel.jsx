@@ -31,10 +31,11 @@ const AdminPanel = () => {
         }
 
         // Check if user is admin
-        const response = await axios.get("https://vtct.onrender.com/api/auth/verify-admin", {
+        const response = await axios.get("https://vtcdd-api.onrender.com/api/auth/verify-admin", {
           headers: {
             Authorization: `Bearer ${token}`
-          }
+          },
+          withCredentials: true
         });
 
         if (response.data.isAdmin) {
