@@ -97,31 +97,32 @@ const AdminPanel = () => {
             ]);
           } else {
             setOffers([
-            {
-              id: 1,
-              title: "Early Bird Discount",
-              description: "Get 25% off on all courses when you enroll before June 30th.",
-              imageUrl: "https://via.placeholder.com/300x200",
-              discount: "25%",
-              expiryDate: "2023-06-30"
-            },
-            {
-              id: 2,
-              title: "Refer a Friend",
-              description: "Refer a friend and both of you get 15% off on any course.",
-              imageUrl: "https://via.placeholder.com/300x200",
-              discount: "15%",
-              expiryDate: "2023-12-31"
-            }
-          ]);
+              {
+                id: 1,
+                title: "Early Bird Discount",
+                description: "Get 25% off on all courses when you enroll before June 30th.",
+                imageUrl: "https://via.placeholder.com/300x200",
+                discount: "25%",
+                expiryDate: "2023-06-30"
+              },
+              {
+                id: 2,
+                title: "Refer a Friend",
+                description: "Refer a friend and both of you get 15% off on any course.",
+                imageUrl: "https://via.placeholder.com/300x200",
+                discount: "15%",
+                expiryDate: "2023-12-31"
+              }
+            ]);
+          }
+        } finally {
+          setLoading(false);
         }
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [activeTab]);
+      };
+      
+      fetchData();
+    }
+  }, [activeTab, isAdmin, authChecking]);
   
   // Resource handlers
   const [newResource, setNewResource] = useState({
