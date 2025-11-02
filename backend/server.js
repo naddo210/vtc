@@ -22,26 +22,27 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://vtcdd.onrender.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// ✅ FIX: Proper CORS configuration
+const allowedOrigins = [
+  'https://vtcdd.onrender.com',
+  'http://localhost:3000', // keep this for local testing
+];
 
-// Fallback CORS handling
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+}));
 
 app.use(express.json());
 
-// Public Routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/carousel', carouselAdRoutes);
@@ -51,13 +52,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/events', eventRoutes);
 
-// Serve uploaded files
+// Serve uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Note: Routes made public for testing
-// To re-enable protection, use:
-// app.use('/api/resources', protect, resourceRoutes);
-// app.use('/api/offers', protect, offerRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -67,13 +63,10 @@ app.get('/', (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-  res.json({
+  res.status(statusCode).json({
     message: err.message,
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
