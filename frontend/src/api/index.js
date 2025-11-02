@@ -3,7 +3,7 @@ import axios from 'axios';
 // Determine API URL based on environment
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 
-  : 'https://vtcdd-api.onrender.com';
+  : 'https://vtct.onrender.com';
 
 // Create axios instance with base URL
 const api = axios.create({

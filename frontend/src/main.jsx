@@ -8,7 +8,7 @@ import axios from 'axios'
 // Configure axios defaults
 axios.defaults.baseURL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 
-  : 'https://vtcdd-api.onrender.com'
+  : 'https://vtct.onrender.com'
 axios.defaults.withCredentials = true
 
 // Add auth token to all requests
