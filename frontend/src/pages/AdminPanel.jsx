@@ -329,3 +329,4 @@ const AdminPanel = () => {
               )}
             </div>
           )}
+        </div>
