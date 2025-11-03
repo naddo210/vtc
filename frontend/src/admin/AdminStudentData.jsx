@@ -29,17 +29,13 @@ const AdminStudentData = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        if (Array.isArray(response.data)) {
-          setStudents(response.data);
-        } else {
-          console.error("Expected array but got:", typeof response.data);
-          setStudents([]);
-          setError("Invalid data format received from server");
-        }
+        // Always set as array, even if response is empty or invalid
+        setStudents(Array.isArray(response.data) ? response.data : []);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching students:", err);
-        setError("Failed to fetch student data: " + (err.response?.data?.message || err.message));
+        setError("Failed to fetch student data");
+        setStudents([]);
         setLoading(false);
       }
     };

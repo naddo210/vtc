@@ -9,8 +9,8 @@ const { protect, adminOnly: admin } = require('../middleware/authMiddleware');
 router.get('/', protect, admin, async (req, res) => {
   try {
     const students = await Student.find({}).sort({ createdAt: -1 });
-    console.log(`Found ${students.length} students`);
-    res.json(students);
+    // Ensure we're always sending an array
+    res.json(Array.isArray(students) ? students : []);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Server Error' });
