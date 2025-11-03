@@ -25,29 +25,13 @@ const AdminStudentData = () => {
     const fetchStudents = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Authentication token not found");
-          setLoading(false);
-          return;
-        }
-        
-        // Set default base URL for axios if needed
-        if (!axios.defaults.baseURL) {
-          axios.defaults.baseURL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:5000' 
-            : 'https://vtcdd-api.onrender.com';
-        }
-        
-        console.log("Fetching students with token:", token);
         const response = await axios.get("/api/students", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log("Student data received:", response.data);
         setStudents(response.data);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching student data:", err);
-        setError(err.response?.data?.message || "Failed to fetch student data");
+        setError("Failed to fetch student data");
         setLoading(false);
       }
     };

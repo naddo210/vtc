@@ -22,26 +22,16 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration with specific allowed origins
-app.use((req, res, next) => {
-  const allowedOrigins = ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  // Check if the request origin is in our allowed list
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests immediately
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  next();
-});
+// CORS configuration
+app.use(cors({
+  origin: ['https://vtcdd.onrender.com', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+  credentials: true,
+}));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 

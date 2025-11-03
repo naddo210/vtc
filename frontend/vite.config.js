@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://vtcdd-api.onrender.com',
+        target: 'https://vtct.onrender.com',
         changeOrigin: true,
         secure: false
       }

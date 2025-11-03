@@ -9,7 +9,7 @@ import ResourcesPage from './pages/ResourcesPage';
 import StudentZonePage from './pages/StudentZonePage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
-import AdminPanel from './pages/AdminPanel';
+import AdminPanel from './admin/AdminPanel.jsx';
 import CareersPage from './pages/CareersPage';
 import GalleryPage from './pages/GalleryPage';
 import BioVaccinePage from './pages/BioVaccinePage';
@@ -20,11 +20,8 @@ import MHTCETPage from './pages/CoursePages/MHTCETPage';
 import FoundationBuilderPage from './pages/CoursePages/FoundationBuilderPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthErrorPage from './pages/AuthErrorPage';
-import AuthGuard from './components/AuthGuard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const location = useLocation();
@@ -40,8 +37,8 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen w-full">
       <Navbar />
-      <main ref={mainRef} className="flex-grow pt-9 transition-all duration-500 ease-in-out w-full">
-        <ToastContainer position="top-right" autoClose={3000} />
+     <main ref={mainRef} className="flex-grow pt-9 transition-all duration-500 ease-in-out w-full">
+
         <div className="w-full px-4">
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -60,12 +57,7 @@ function App() {
             <Route path="/student-zone" element={<StudentZonePage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
-            
-            {/* Protected Admin Routes */}
-            <Route element={<AuthGuard />}>
-              <Route path="/admin/*" element={<AdminPanel />} />
-            </Route>
-            
+            <Route path="/admin/*" element={<AdminPanel />} />
             <Route path="/careers" element={<CareersPage />} />
             <Route path="/auth-error" element={<AuthErrorPage />} />
             <Route path="*" element={<NotFoundPage />} />

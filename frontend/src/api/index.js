@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// Determine API URL based on environment
-const API_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:5000' 
-  : 'https://vtct.onrender.com';
+// const API_URL = 'http://localhost:5000';
+const API_URL = 'https://vtct.onrender.com';
 
 // Create axios instance with base URL
 const api = axios.create({
@@ -65,13 +63,7 @@ authAPI.interceptors.request.use(
 // Auth API
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
+    const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
     }
@@ -84,13 +76,7 @@ export const login = async (email, password) => {
 
 export const register = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/register`, userData, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
+    const response = await axios.post(`${API_URL}/auth/register`, userData);
     return response.data;
   } catch (error) {
     console.error('Registration error:', error);

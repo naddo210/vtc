@@ -34,8 +34,7 @@ const AdminPanel = () => {
         const response = await axios.get("https://vtct.onrender.com/api/auth/verify-admin", {
           headers: {
             Authorization: `Bearer ${token}`
-          },
-          withCredentials: true
+          }
         });
 
         if (response.data.isAdmin) {

@@ -5,9 +5,6 @@ import { getResources, createResource, updateResource, deleteResource,
 import AdminOfferUpload from "../admin/AdminOfferUpload";
 import AdminResourceUpload from "../admin/AdminResourceUpload";
 import AdminCarouselUpload from "../admin/AdminCarouselUpload";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("resources");
@@ -17,112 +14,66 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [themeColor, setThemeColor] = useState("#663399");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [authChecking, setAuthChecking] = useState(true);
   
-  const navigate = useNavigate();
-  
-  // Check admin authentication
   useEffect(() => {
-    const verifyAdmin = async () => {
+    const fetchData = async () => {
       try {
-        setAuthChecking(true);
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-          toast.error("Authentication required. Please login.");
-          navigate('/login');
-          return;
-        }
-        
-        const response = await axios.get('https://vtct.onrender.com/api/auth/verify-admin', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          withCredentials: true
-        });
-        
-        if (response.data.success) {
-          setIsAdmin(true);
+        setLoading(true);
+        if (activeTab === "resources") {
+          const data = await getResources();
+          setResources(data);
         } else {
-          toast.error("Admin access required");
-          navigate('/login');
+          const data = await getOffers();
+          setOffers(data);
         }
-      } catch (error) {
-        console.error("Admin verification failed:", error);
-        toast.error("Admin verification failed. Please login again.");
-        localStorage.removeItem('token');
-        navigate('/login');
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch data. Using sample data instead.");
+        // Fallback to sample data if API fails
+        if (activeTab === "resources") {
+          setResources([
+            {
+              id: 1,
+              title: "Web Development Fundamentals",
+              imageUrl: "https://via.placeholder.com/300x200",
+              url: "https://example.com/resource1",
+              category: "web-development"
+            },
+            {
+              id: 2,
+              title: "Data Science Toolkit",
+              imageUrl: "https://via.placeholder.com/300x200",
+              url: "https://example.com/resource2",
+              category: "data-science"
+            }
+          ]);
+        } else {
+          setOffers([
+            {
+              id: 1,
+              title: "Early Bird Discount",
+              description: "Get 25% off on all courses when you enroll before June 30th.",
+              imageUrl: "https://via.placeholder.com/300x200",
+              discount: "25%",
+              expiryDate: "2023-06-30"
+            },
+            {
+              id: 2,
+              title: "Refer a Friend",
+              description: "Refer a friend and both of you get 15% off on any course.",
+              imageUrl: "https://via.placeholder.com/300x200",
+              discount: "15%",
+              expiryDate: "2023-12-31"
+            }
+          ]);
+        }
       } finally {
-        setAuthChecking(false);
+        setLoading(false);
       }
     };
     
-    verifyAdmin();
-  }, [navigate]);
-  
-  useEffect(() => {
-    // Only fetch data if admin is verified
-    if (isAdmin && !authChecking) {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          if (activeTab === "resources") {
-            const data = await getResources();
-            setResources(data);
-          } else {
-            const data = await getOffers();
-            setOffers(data);
-          }
-          setError(null);
-        } catch (err) {
-          setError("Failed to fetch data. Using sample data instead.");
-          // Fallback to sample data if API fails
-          if (activeTab === "resources") {
-            setResources([
-              {
-                id: 1,
-                title: "Web Development Fundamentals",
-                imageUrl: "https://via.placeholder.com/300x200",
-                url: "https://example.com/resource1",
-                category: "web-development"
-              },
-              {
-                id: 2,
-                title: "Data Science Toolkit",
-                imageUrl: "https://via.placeholder.com/300x200",
-                url: "https://example.com/resource2",
-                category: "data-science"
-              }
-            ]);
-          } else {
-            setOffers([
-              {
-                id: 1,
-                title: "Early Bird Discount",
-                description: "Get 25% off on all courses when you enroll before June 30th.",
-                imageUrl: "https://via.placeholder.com/300x200",
-                discount: "25%",
-                expiryDate: "2023-06-30"
-              },
-              {
-                id: 2,
-                title: "Refer a Friend",
-                description: "Refer a friend and both of you get 15% off on any course.",
-                imageUrl: "https://via.placeholder.com/300x200",
-                discount: "15%",
-                expiryDate: "2023-12-31"
-              }
-            ]);
-          }
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      fetchData();
-    }
-  }, [activeTab, isAdmin, authChecking]);
+    fetchData();
+  }, [activeTab]);
   
   // Resource handlers
   const [newResource, setNewResource] = useState({
@@ -329,11 +280,3 @@ const AdminPanel = () => {
               )}
             </div>
           )}
-        </div>
-        {/* Close container and page wrappers */}
-      </div>
-    </div>
-  );
-};
-
-export default AdminPanel;
