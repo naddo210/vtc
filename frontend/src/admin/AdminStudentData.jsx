@@ -25,8 +25,36 @@ const AdminStudentData = () => {
     const fetchStudents = async () => {
       try {
         const token = localStorage.getItem("token");
+        setLoading(true);
         
-        // Add a dummy student directly to the state for immediate display
+        // Fetch real data from backend
+        const response = await axios.get("/api/students", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          // If we have real data, use it
+          console.log("Real student data received:", response.data);
+          setStudents(response.data);
+        } else {
+          // Only use dummy data if no real data exists
+          console.log("No real student data found, using dummy data");
+          const dummyStudent = {
+            _id: "dummy123",
+            name: "Test Student",
+            age: 25,
+            dob: "1999-01-01",
+            email: "test@example.com",
+            phone: "1234567890",
+            address: "Test Address",
+            enrollingCourse: "Test Course",
+            createdAt: new Date().toISOString()
+          };
+          setStudents([dummyStudent]);
+        }
+      } catch (err) {
+        console.error("Error fetching students:", err);
+        // Only use dummy data on error
         const dummyStudent = {
           _id: "dummy123",
           name: "Test Student",
@@ -38,23 +66,10 @@ const AdminStudentData = () => {
           enrollingCourse: "Test Course",
           createdAt: new Date().toISOString()
         };
-        
-        // Set dummy student immediately
         setStudents([dummyStudent]);
-        setLoading(false);
-        
-        // Then try to fetch real data
-        const response = await axios.get("/api/students", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          setStudents(response.data);
-        }
-      } catch (err) {
-        console.error("Error fetching students:", err);
-        // Keep the dummy student even if fetch fails
         setError("Using sample data - database connection issue");
+      } finally {
+        setLoading(false);
       }
     };
 
