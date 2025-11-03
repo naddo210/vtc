@@ -28,10 +28,18 @@ const AdminStudentData = () => {
         const response = await axios.get("/api/students", {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setStudents(response.data);
+        
+        if (Array.isArray(response.data)) {
+          setStudents(response.data);
+        } else {
+          console.error("Expected array but got:", typeof response.data);
+          setStudents([]);
+          setError("Invalid data format received from server");
+        }
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch student data");
+        console.error("Error fetching students:", err);
+        setError("Failed to fetch student data: " + (err.response?.data?.message || err.message));
         setLoading(false);
       }
     };
