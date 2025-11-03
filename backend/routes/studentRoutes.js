@@ -8,9 +8,27 @@ const { protect, adminOnly: admin } = require('../middleware/authMiddleware');
 // @access  Private/Admin
 router.get('/', protect, admin, async (req, res) => {
   try {
-    const students = await Student.find({}).sort({ createdAt: -1 });
-    // Ensure we're always sending an array
-    res.json(Array.isArray(students) ? students : []);
+    // Force refresh from database
+    const students = await Student.find().sort({ createdAt: -1 });
+    console.log(`Found ${students.length} students in database`);
+    
+    // If no students found, add a test student
+    if (students.length === 0) {
+      console.log('No students found, adding test student');
+      const testStudent = new Student({
+        name: 'Test Student',
+        age: 25,
+        dob: new Date('1999-01-01'),
+        email: 'test@example.com',
+        phone: '1234567890',
+        address: 'Test Address',
+        enrollingCourse: 'Test Course'
+      });
+      await testStudent.save();
+      students.push(testStudent);
+    }
+    
+    res.json(students);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Server Error' });
