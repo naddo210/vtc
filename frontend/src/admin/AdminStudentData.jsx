@@ -115,11 +115,12 @@ const AdminStudentData = () => {
   };
 
   // Filter students based on search term
-  const filteredStudents = students.filter(student => 
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredStudents = Array.isArray(students) ? students.filter(student => 
+    student && student.name && student.email && student.enrollingCourse &&
+    (student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.enrollingCourse.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    student.enrollingCourse.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) : [];
 
   // Pagination
   const indexOfLastStudent = currentPage * studentsPerPage;
