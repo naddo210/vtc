@@ -5,6 +5,7 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
 
 // Configure multer for memory storage (for Cloudinary)
 const storage = multer.memoryStorage();
@@ -84,15 +85,32 @@ router.post('/', upload.single('image'), async function(req, res) {
   }
   
   try {
-    // Convert buffer to data URL for Cloudinary upload
-    const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-    
-    // Upload to Cloudinary
-    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-      folder: 'vtc/testimonials',
-      resource_type: 'image',
-      quality: 'auto:best',
-    });
+    let imageUrl = null;
+    let cloudinaryId = null;
+
+    // Prefer Cloudinary if environment is configured
+    const hasCloudinary =
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET;
+
+    if (hasCloudinary) {
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+        folder: 'vtc/testimonials',
+        resource_type: 'image',
+        quality: 'auto:best',
+      });
+      imageUrl = uploadResponse.secure_url;
+      cloudinaryId = uploadResponse.public_id;
+    } else {
+      // Fallback to local storage
+      const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+      const filename = `testimonial-${Date.now()}${ext}`;
+      const filepath = path.join(__dirname, '..', 'uploads', filename);
+      fs.writeFileSync(filepath, req.file.buffer);
+      imageUrl = `/uploads/${filename}`;
+    }
 
     const testimonial = new Testimonial({
       name,
@@ -100,8 +118,8 @@ router.post('/', upload.single('image'), async function(req, res) {
       company,
       text,
       rating: Number(rating) || 5,
-      image: uploadResponse.secure_url,
-      cloudinary_id: uploadResponse.public_id,
+      image: imageUrl,
+      cloudinary_id: cloudinaryId,
       isImageOnly: isImageOnly === 'true',
       displayOrder: Number(displayOrder) || 0,
       isActive: true
@@ -135,23 +153,31 @@ router.put('/:id', protect, adminOnly, upload.single('image'), async function(re
     testimonial.isActive = isActive !== undefined ? isActive : testimonial.isActive;
     
     if (req.file) {
-      // Delete previous image from Cloudinary if it exists
-      if (testimonial.cloudinary_id) {
-        await cloudinary.uploader.destroy(testimonial.cloudinary_id);
+      const hasCloudinary =
+        process.env.CLOUDINARY_CLOUD_NAME &&
+        process.env.CLOUDINARY_API_KEY &&
+        process.env.CLOUDINARY_API_SECRET;
+
+      if (hasCloudinary) {
+        if (testimonial.cloudinary_id) {
+          await cloudinary.uploader.destroy(testimonial.cloudinary_id);
+        }
+        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+          folder: 'vtc/testimonials',
+          resource_type: 'image',
+          quality: 'auto:best',
+        });
+        testimonial.image = uploadResponse.secure_url;
+        testimonial.cloudinary_id = uploadResponse.public_id;
+      } else {
+        const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+        const filename = `testimonial-${Date.now()}${ext}`;
+        const filepath = path.join(__dirname, '..', 'uploads', filename);
+        fs.writeFileSync(filepath, req.file.buffer);
+        testimonial.image = `/uploads/${filename}`;
+        testimonial.cloudinary_id = null;
       }
-      
-      // Convert buffer to data URL for Cloudinary upload
-      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-      
-      // Upload to Cloudinary
-      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-        folder: 'vtc/testimonials',
-        resource_type: 'image',
-        quality: 'auto:best',
-      });
-      
-      testimonial.image = uploadResponse.secure_url;
-      testimonial.cloudinary_id = uploadResponse.public_id;
     }
     
     const updatedTestimonial = await testimonial.save();

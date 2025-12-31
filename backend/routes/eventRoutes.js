@@ -5,6 +5,7 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
 
 // Configure multer for memory storage (for Cloudinary)
 const storage = multer.memoryStorage();
@@ -80,20 +81,35 @@ router.post('/', upload.single('image'), async function(req, res) {
   }
   
   try {
-    // Convert buffer to data URL for Cloudinary upload
-    const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-    
-    // Upload to Cloudinary
-    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-      folder: 'vtc/events',
-      resource_type: 'image',
-      quality: 'auto:best',
-    });
+    let imageUrl = null;
+    let cloudinaryId = null;
+
+    const hasCloudinary =
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET;
+
+    if (hasCloudinary) {
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+        folder: 'vtc/events',
+        resource_type: 'image',
+        quality: 'auto:best',
+      });
+      imageUrl = uploadResponse.secure_url;
+      cloudinaryId = uploadResponse.public_id;
+    } else {
+      const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+      const filename = `event-${Date.now()}${ext}`;
+      const filepath = path.join(__dirname, '..', 'uploads', filename);
+      fs.writeFileSync(filepath, req.file.buffer);
+      imageUrl = `/uploads/${filename}`;
+    }
     
     const event = new Event({
       title,
-      image: uploadResponse.secure_url,
-      cloudinary_id: uploadResponse.public_id,
+      image: imageUrl,
+      cloudinary_id: cloudinaryId,
       isActive: isActive === 'true'
     });
     
@@ -120,23 +136,31 @@ router.put('/:id', protect, adminOnly, upload.single('image'), async function(re
     event.title = title || event.title;
     
     if (req.file) {
-      // Delete previous image from Cloudinary if it exists
-      if (event.cloudinary_id) {
-        await cloudinary.uploader.destroy(event.cloudinary_id);
+      const hasCloudinary =
+        process.env.CLOUDINARY_CLOUD_NAME &&
+        process.env.CLOUDINARY_API_KEY &&
+        process.env.CLOUDINARY_API_SECRET;
+
+      if (hasCloudinary) {
+        if (event.cloudinary_id) {
+          await cloudinary.uploader.destroy(event.cloudinary_id);
+        }
+        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+          folder: 'vtc/events',
+          resource_type: 'image',
+          quality: 'auto:best',
+        });
+        event.image = uploadResponse.secure_url;
+        event.cloudinary_id = uploadResponse.public_id;
+      } else {
+        const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+        const filename = `event-${Date.now()}${ext}`;
+        const filepath = path.join(__dirname, '..', 'uploads', filename);
+        fs.writeFileSync(filepath, req.file.buffer);
+        event.image = `/uploads/${filename}`;
+        event.cloudinary_id = null;
       }
-      
-      // Convert buffer to data URL for Cloudinary upload
-      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-      
-      // Upload to Cloudinary
-      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-        folder: 'vtc/events',
-        resource_type: 'image',
-        quality: 'auto:best',
-      });
-      
-      event.image = uploadResponse.secure_url;
-      event.cloudinary_id = uploadResponse.public_id;
     }
     
     if (isActive !== undefined) {
