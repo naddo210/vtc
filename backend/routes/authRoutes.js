@@ -84,46 +84,48 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Please provide an email and password' });
     }
 
-    // Admin login
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      const adminUser = {
-        _id: '1',
-        name: 'Admin',
-        email: process.env.ADMIN_EMAIL,
-        role: 'admin'
-      };
+    // Check for user in database
+    const user = await User.findOne({ email }).select('+password');
 
-      // Generate JWT token with admin role
-      const token = generateToken(adminUser._id, 'admin');
-
-      return res.status(200).json({
-        _id: adminUser._id,
-        name: adminUser.name,
-        email: adminUser.email,
-        role: 'admin',
-        token,
-        isAdmin: true
-      });
+    if (!user) {
+      // Check for hardcoded admin as fallback (optional, but good for safety during transition)
+      if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+        const adminUser = {
+          _id: '1',
+          name: 'Admin',
+          email: process.env.ADMIN_EMAIL,
+          role: 'admin'
+        };
+        const token = generateToken(adminUser._id, 'admin');
+        return res.status(200).json({
+          _id: adminUser._id,
+          name: adminUser.name,
+          email: adminUser.email,
+          role: 'admin',
+          token,
+          isAdmin: true
+        });
+      }
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Regular user login
-    const regularUser = {
-      _id: Date.now().toString(),
-      name: email.split('@')[0],
-      email,
-      role: 'user'
-    };
+    // Check if password matches
+    const isMatch = await user.matchPassword(password);
 
-    // Generate JWT token with user role
-    const token = generateToken(regularUser._id, 'user');
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = user.getSignedJwtToken();
 
     return res.status(200).json({
-      _id: regularUser._id,
-      name: regularUser.name,
-      email: regularUser.email,
-      role: 'user',
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
       token,
-      isAdmin: false
+      isAdmin: user.role === 'admin'
     });
   } catch (err) {
     console.error('Login error:', err.message);
