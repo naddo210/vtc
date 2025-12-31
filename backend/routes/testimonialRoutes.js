@@ -95,16 +95,24 @@ router.post('/', upload.single('image'), async function(req, res) {
       process.env.CLOUDINARY_API_SECRET;
 
     if (hasCloudinary) {
-      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-      const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-        folder: 'vtc/testimonials',
-        resource_type: 'image',
-        quality: 'auto:best',
-      });
-      imageUrl = uploadResponse.secure_url;
-      cloudinaryId = uploadResponse.public_id;
+      try {
+        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+          folder: 'vtc/testimonials',
+          resource_type: 'image',
+          quality: 'auto:best',
+        });
+        imageUrl = uploadResponse.secure_url;
+        cloudinaryId = uploadResponse.public_id;
+      } catch (e) {
+        const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+        const filename = `testimonial-${Date.now()}${ext}`;
+        const filepath = path.join(__dirname, '..', 'uploads', filename);
+        fs.writeFileSync(filepath, req.file.buffer);
+        imageUrl = `/uploads/${filename}`;
+        cloudinaryId = null;
+      }
     } else {
-      // Fallback to local storage
       const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
       const filename = `testimonial-${Date.now()}${ext}`;
       const filepath = path.join(__dirname, '..', 'uploads', filename);
@@ -159,17 +167,26 @@ router.put('/:id', protect, adminOnly, upload.single('image'), async function(re
         process.env.CLOUDINARY_API_SECRET;
 
       if (hasCloudinary) {
-        if (testimonial.cloudinary_id) {
-          await cloudinary.uploader.destroy(testimonial.cloudinary_id);
+        try {
+          if (testimonial.cloudinary_id) {
+            await cloudinary.uploader.destroy(testimonial.cloudinary_id);
+          }
+          const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+          const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+            folder: 'vtc/testimonials',
+            resource_type: 'image',
+            quality: 'auto:best',
+          });
+          testimonial.image = uploadResponse.secure_url;
+          testimonial.cloudinary_id = uploadResponse.public_id;
+        } catch (e) {
+          const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+          const filename = `testimonial-${Date.now()}${ext}`;
+          const filepath = path.join(__dirname, '..', 'uploads', filename);
+          fs.writeFileSync(filepath, req.file.buffer);
+          testimonial.image = `/uploads/${filename}`;
+          testimonial.cloudinary_id = null;
         }
-        const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-        const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-          folder: 'vtc/testimonials',
-          resource_type: 'image',
-          quality: 'auto:best',
-        });
-        testimonial.image = uploadResponse.secure_url;
-        testimonial.cloudinary_id = uploadResponse.public_id;
       } else {
         const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
         const filename = `testimonial-${Date.now()}${ext}`;
