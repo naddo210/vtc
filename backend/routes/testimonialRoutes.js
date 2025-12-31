@@ -29,43 +29,50 @@ const upload = multer({
 });
 
 // Get all active testimonials
-router.get('/', function(req, res) {
-  Testimonial.find({ isActive: true })
-    .sort({ createdAt: -1 })
-    .then(testimonials => res.json(testimonials))
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/', async function(req, res) {
+  try {
+    const testimonials = await Testimonial.find({ isActive: true }).sort({ createdAt: -1 });
+    return res.json(testimonials);
+  } catch (error) {
+    console.error('Error fetching testimonials:', error.message);
+    return res.status(200).json([]);
+  }
 });
 
 // Get image-only testimonials for slider
-router.get('/slider', function(req, res) {
-  Testimonial.find({ isActive: true, isImageOnly: true })
-    .sort({ displayOrder: 1 })
-    .then(testimonials => res.json(testimonials))
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/slider', async function(req, res) {
+  try {
+    const testimonials = await Testimonial.find({ isActive: true, isImageOnly: true }).sort({ displayOrder: 1 });
+    return res.json(testimonials);
+  } catch (error) {
+    console.error('Error fetching slider testimonials:', error.message);
+    return res.status(200).json([]);
+  }
 });
 
 // Get all testimonials for admin
-router.get('/admin', protect, adminOnly, function(req, res) {
-  Testimonial.find({})
-    .sort({ createdAt: -1 })
-    .then(testimonials => res.json(testimonials))
-    .catch(error => {
-      console.error('Error fetching admin testimonials:', error);
-      res.status(500).json({ message: 'Server Error' });
-    });
+router.get('/admin', protect, adminOnly, async function(req, res) {
+  try {
+    const testimonials = await Testimonial.find({}).sort({ createdAt: -1 });
+    return res.json(testimonials);
+  } catch (error) {
+    console.error('Error fetching admin testimonials:', error.message);
+    return res.status(200).json([]);
+  }
 });
 
 // Get testimonial by ID
-router.get('/:id', function(req, res) {
-  Testimonial.findById(req.params.id)
-    .then(testimonial => {
-      if (testimonial) {
-        res.json(testimonial);
-      } else {
-        res.status(404).json({ message: 'Testimonial not found' });
-      }
-    })
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/:id', async function(req, res) {
+  try {
+    const testimonial = await Testimonial.findById(req.params.id);
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+    return res.json(testimonial);
+  } catch (error) {
+    console.error('Error fetching testimonial by id:', error.message);
+    return res.status(404).json({ message: 'Testimonial not found' });
+  }
 });
 
 // Create a testimonial

@@ -29,34 +29,44 @@ const upload = multer({
 // @desc    Get all active events
 // @route   GET /api/events
 // @access  Public
-router.get('/', function(req, res) {
-  Event.find({ isActive: true }).sort({ createdAt: -1 })
-    .then(events => res.json(events))
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/', async function(req, res) {
+  try {
+    const events = await Event.find({ isActive: true }).sort({ createdAt: -1 });
+    return res.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error.message);
+    // Graceful fallback: return empty list to avoid frontend breakage
+    return res.status(200).json([]);
+  }
 });
 
 // @desc    Get all events (including inactive) for admin
 // @route   GET /api/events/admin
 // @access  Private/Admin
-router.get('/admin', protect, adminOnly, function(req, res) {
-  Event.find({}).sort({ createdAt: -1 })
-    .then(events => res.json(events))
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/admin', protect, adminOnly, async function(req, res) {
+  try {
+    const events = await Event.find({}).sort({ createdAt: -1 });
+    return res.json(events);
+  } catch (error) {
+    console.error('Error fetching admin events:', error.message);
+    return res.status(200).json([]);
+  }
 });
 
 // @desc    Get event by ID
 // @route   GET /api/events/:id
 // @access  Public
-router.get('/:id', function(req, res) {
-  Event.findById(req.params.id)
-    .then(event => {
-      if (event) {
-        res.json(event);
-      } else {
-        res.status(404).json({ message: 'Event not found' });
-      }
-    })
-    .catch(error => res.status(500).json({ message: 'Server Error' }));
+router.get('/:id', async function(req, res) {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    return res.json(event);
+  } catch (error) {
+    console.error('Error fetching event by id:', error.message);
+    return res.status(404).json({ message: 'Event not found' });
+  }
 });
 
 // @desc    Create a new event
