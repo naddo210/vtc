@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { FaUser, FaCalendarAlt, FaPhone, FaEnvelope, FaHome, FaBook } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -31,7 +31,7 @@ const StudentZonePage = () => {
     setError('');
     
     try {
-      await axios.post('/api/students', formData);
+      await api.post('/api/students', formData);
       setSuccess(true);
       setFormData({
         name: '',
