@@ -8,7 +8,7 @@ import AdminStudentData from "./AdminStudentData";
 import AdminCarouselUpload from "./AdminCarouselUpload";
 import EventManagement from "./EventManagement";
 import TestimonialManagement from "./TestimonialManagement";
-import axios from "axios";
+import api from "../api";
 
 const AdminPanel = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,11 +31,7 @@ const AdminPanel = () => {
         }
 
         // Check if user is admin
-        const response = await axios.get("/api/auth/verify-admin", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await api.get("/api/auth/verify-admin");
 
         if (response.data.isAdmin) {
           setIsAdmin(true);

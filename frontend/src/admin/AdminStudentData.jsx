@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 
 const AdminStudentData = () => {
@@ -28,9 +28,7 @@ const AdminStudentData = () => {
         const token = localStorage.getItem("token");
         
         // Fetch real data from backend
-        const response = await axios.get("/api/students", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get("/api/students");
         
         console.log("Student data received:", response.data);
         
@@ -89,9 +87,7 @@ const AdminStudentData = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`/api/students/${editingStudent}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/api/students/${editingStudent}`, formData);
       
       // Update the students list
       const updatedStudents = students.map(student => 
@@ -111,9 +107,7 @@ const AdminStudentData = () => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`/api/students/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/api/students/${id}`);
         
         // Remove from students list
         setStudents(students.filter(student => student._id !== id));
