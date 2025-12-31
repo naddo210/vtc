@@ -19,14 +19,14 @@ exports.protect = async (req, res, next) => {
 
   try {
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'vtc_secret_key');
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'vtc-secret-key');
+
     // Set user info from decoded token
     req.user = {
       id: decoded.id,
       role: decoded.role
     };
-    
+
     next();
   } catch (err) {
     console.error('Auth error:', err.message);
@@ -50,8 +50,8 @@ exports.adminOnly = async (req, res, next) => {
 exports.authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ 
-        message: `User role ${req.user.role} is not authorized to access this route` 
+      return res.status(403).json({
+        message: `User role ${req.user.role} is not authorized to access this route`
       });
     }
     next();
