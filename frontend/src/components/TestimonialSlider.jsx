@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { API_URL } from '../api/index';
+import api from '../api';
 
 const TestimonialSlider = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -11,17 +10,15 @@ const TestimonialSlider = () => {
     // Fetch image testimonials from the backend
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get('/api/testimonials/slider');
-        // Ensure response.data is an array before setting state
+        const response = await api.get('/api/testimonials/slider');
         if (Array.isArray(response.data) && response.data.length > 0) {
           setTestimonials(response.data);
         } else {
-          console.error('Expected an array of testimonials but got:', response.data);
-          setTestimonials([]); // Set to empty array as fallback
+          setTestimonials([]);
         }
       } catch (error) {
         console.error('Error fetching testimonial images:', error);
-        setTestimonials([]); // Set to empty array on error
+        setTestimonials([]);
       }
     };
 

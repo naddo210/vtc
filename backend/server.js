@@ -47,6 +47,24 @@ app.use('/api/events', eventRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health check for operational visibility
+app.get('/api/health', async (req, res) => {
+  try {
+    const isDbConnected = !!(require('mongoose').connection && require('mongoose').connection.readyState === 1);
+    res.json({
+      status: 'ok',
+      db: isDbConnected ? 'connected' : 'disconnected',
+      env: {
+        hasMongoUri: !!process.env.MONGO_URI,
+        hasJwtSecret: !!process.env.JWT_SECRET,
+        hasCloudinary: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET)
+      }
+    });
+  } catch (err) {
+    res.status(200).json({ status: 'degraded', error: err.message });
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('VTC Classes API is running');
 });

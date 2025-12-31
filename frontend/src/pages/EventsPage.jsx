@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { FaCalendarAlt } from 'react-icons/fa';
 
 const EventsPage = () => {
@@ -9,18 +9,12 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://vtct.onrender.com/api/events');
-        // Ensure response.data is an array before setting state
-        if (Array.isArray(response.data)) {
-          setEvents(response.data);
-        } else {
-          console.error('Expected an array of events but got:', response.data);
-          setEvents([]); // Set to empty array as fallback
-        }
-        setLoading(false);
+        const response = await api.get('/api/events');
+        setEvents(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching events:', error);
-        setEvents([]); // Set to empty array on error
+        setEvents([]);
+      } finally {
         setLoading(false);
       }
     };

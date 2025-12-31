@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
-import axios from "axios";
+import api from "../api";
 import TestimonialSlider from "../components/TestimonialSlider";
 import { 
   FaPhone, 
@@ -67,10 +67,11 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const testimonialResponse = await axios.get('https://vtct.onrender.com/api/testimonials');
-        setTestimonials(testimonialResponse.data);
+        const testimonialResponse = await api.get('/api/testimonials');
+        setTestimonials(Array.isArray(testimonialResponse.data) ? testimonialResponse.data : []);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
+        setTestimonials([]);
       }
     };
     
@@ -81,12 +82,15 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCarouselAds = async () => {
       try {
-        const response = await axios.get('https://vtct.onrender.com/api/carousel');
-        if (response.data && response.data.length > 0) {
+        const response = await api.get('/api/carousel');
+        if (Array.isArray(response.data) && response.data.length > 0) {
           setCarouselAds(response.data);
+        } else {
+          setCarouselAds([]);
         }
       } catch (error) {
         console.error('Error fetching carousel ads:', error);
+        setCarouselAds([]);
       }
     };
     
