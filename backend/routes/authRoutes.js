@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 const { protect, authorize, adminOnly } = require('../middleware/authMiddleware');
 
 // Helper function to generate JWT token
@@ -91,10 +92,10 @@ router.post('/login', async (req, res) => {
         email: process.env.ADMIN_EMAIL,
         role: 'admin'
       };
-      
+
       // Generate JWT token with admin role
       const token = generateToken(adminUser._id, 'admin');
-      
+
       return res.status(200).json({
         _id: adminUser._id,
         name: adminUser.name,
@@ -104,7 +105,7 @@ router.post('/login', async (req, res) => {
         isAdmin: true
       });
     }
-    
+
     // Regular user login
     const regularUser = {
       _id: Date.now().toString(),
@@ -112,10 +113,10 @@ router.post('/login', async (req, res) => {
       email,
       role: 'user'
     };
-    
+
     // Generate JWT token with user role
     const token = generateToken(regularUser._id, 'user');
-    
+
     return res.status(200).json({
       _id: regularUser._id,
       name: regularUser.name,
@@ -139,7 +140,7 @@ router.get('/me', protect, async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-      
+
       // Don't return password
       const { password, ...userWithoutPassword } = user;
       return res.json({
@@ -228,15 +229,15 @@ router.get('/verify-admin', protect, (req, res) => {
   try {
     // Check if user is admin based on JWT token
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
         message: 'Not authorized as admin',
         isAdmin: false
       });
     }
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: 'User is authenticated as admin',
       isAdmin: true,
       user: {
